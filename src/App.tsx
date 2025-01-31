@@ -1,7 +1,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { Home } from './components/main/Home/Home'
-import { TaskList } from './components/Tasks/TaskList'
+import { Tasks } from './components/Tasks/Tasks'
 import { Task } from './components/Tasks/Task';
 import { NewTask } from './components/Tasks/NewTask';
 
@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="/tasks">
-            <Route index element={<TaskList />} />
+            <Route index element={<Tasks />} />
             <Route path="new" element={<NewTask />} />
             <Route path=":id" element={<Task />} />
           </Route>

@@ -5,8 +5,13 @@ export type FetcherConstructorArgs = {
 }
 
 export type FetcherGetArgs<T> = {
-  pageToFetch: string
+  path: string
   cb: (responseData: FetcherResponse<T | null>) => void
 }
 
-
+export type FetcherPostArgs<T> = {
+  path: string
+  cb: (responseData: FetcherResponse<T | null>) => void
+  body: {[key:string]: unknown} | string
+  headers?: {[key:string]: string}
+}

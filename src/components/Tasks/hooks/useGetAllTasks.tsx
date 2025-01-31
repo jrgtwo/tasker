@@ -5,15 +5,15 @@ import type {Tasks, TaskError } from '../Types'
 
 const useGetAllTasks = () => {
   const [taskList, setTaskList] = useState<Tasks>();
-  const [taskFetchError, setTaskFetchError] = useState<TaskError>();
+  const [error, setError] = useState<TaskError>();
   const fetcher = useContext(FetcherContext);
 
   useEffect(() => {
     fetcher.get<Tasks>({
-        pageToFetch: ENDPOINTS.TASKS.GET_ALL, 
+        path: ENDPOINTS.TASKS.GET_ALL, 
         cb: ({err, res} ) => {
           if (err || res === null) {
-            setTaskFetchError({err: 'error'})
+            setError({err: 'error'})
           } else {
             setTaskList(res);
           }
@@ -21,7 +21,7 @@ const useGetAllTasks = () => {
       })
   }, [fetcher])
 
-  return {taskList, taskFetchError};
+  return {taskList, error};
 }
 
 export { useGetAllTasks }
