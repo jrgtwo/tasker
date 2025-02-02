@@ -2,12 +2,13 @@ import type {
   FetcherResponse, 
   FetcherConstructorArgs, 
   FetcherGetArgs,
-  FetcherPostArgs
+  FetcherPostArgs,
+  FetcherInterface
 } from "./FetcherTypes";
 
 const defaultResponse = {err: null, res: null};
 
-class Fetcher {
+class Fetcher implements FetcherInterface{
   #BASE_URL!: string
 
   constructor({ BASE_URL }: FetcherConstructorArgs) {
@@ -18,6 +19,7 @@ class Fetcher {
 
   async get<ResType>({ path, cb }: FetcherGetArgs<ResType>) {
       const output: FetcherResponse<ResType | null> = defaultResponse;
+      
       try {
         const req = await fetch(this.#BASE_URL + path)
         const res = await req.json()
@@ -32,6 +34,7 @@ class Fetcher {
 
   async post<ResType>({path, cb, body}: FetcherPostArgs<ResType>) {
     const output: FetcherResponse<ResType | null> = defaultResponse;
+
     try {
       const reqBody = typeof body === 'string' ? body: JSON.stringify(body)
       const req = await fetch(this.#BASE_URL + path, {
