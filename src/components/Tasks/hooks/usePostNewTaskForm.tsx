@@ -4,9 +4,11 @@ import type { FetcherResponse } from '../../../utils/FetcherTypes';
 import type { Task } from './../Types';
 import { SubmissionState } from '../constants/submissionStates';
 import { ENDPOINTS } from '../../../constants/endpoints';
+import { UserLoginContext } from '../../../vendor/google/google';
 
 const usePostNewTaskForm = () => {
   const fetcher = useContext(FetcherContext);
+  const { userLoginData } = useContext(UserLoginContext);
 
   const [isSubmitting, setIsSubmitting] = useState<SubmissionState>(SubmissionState.init);
   const [submissionError, setSubmissionError] = useState<FetcherResponse<Task>["err"]>()
@@ -35,7 +37,7 @@ const usePostNewTaskForm = () => {
           setIsSubmitting(SubmissionState.finished);
         }
       },
-      body: {title, desc}
+      body: {title, desc, userId: userLoginData.userId}
     })
   }
 

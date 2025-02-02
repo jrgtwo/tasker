@@ -29,7 +29,8 @@ class Fetcher implements FetcherInterface{
         output.err = new Error(`Error: ${err}`)
       }
 
-      cb(output)
+      return cb ? cb(output): output
+
   }
 
   async post<ResType>({path, cb, body}: FetcherPostArgs<ResType>) {
@@ -54,7 +55,7 @@ class Fetcher implements FetcherInterface{
       output.err = new Error(`Error: ${err}`)
     }
   
-    cb(output);
+    return cb ? cb(output): output
   } 
 }
 

@@ -4,21 +4,24 @@ import { Tasks } from './components/Tasks/Tasks'
 import { Task } from './components/Tasks/Task';
 import { NewTask } from './components/Tasks/NewTask';
 import { UserLoginSection } from './components/User/UserLoginSection' 
+import {  UserLoginProvider } from "./vendor/google/google"
 
 function App() {
   return (
     <>
-      <UserLoginSection />
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path="/tasks">
-            <Route index element={<Tasks />} />
-            <Route path="new" element={<NewTask />} />
-            <Route path=":id" element={<Task />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <UserLoginProvider>
+        <UserLoginSection />
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="/tasks">
+              <Route index element={<Tasks />} />
+              <Route path="new" element={<NewTask />} />
+              <Route path=":id" element={<Task />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </UserLoginProvider>
     </>
   )
 }

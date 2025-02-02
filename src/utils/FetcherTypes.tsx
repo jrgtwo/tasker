@@ -6,12 +6,12 @@ export type FetcherConstructorArgs = {
 
 export type FetcherGetArgs<T> = {
   path: string
-  cb: (responseData: FetcherResponse<T | null>) => void
+  cb?: (responseData: FetcherResponse<T | null>) => void
 }
 
 export type FetcherPostArgs<T> = {
   path: string
-  cb: (responseData: FetcherResponse<T | null>) => void
+  cb?: (responseData: FetcherResponse<T | null>) => void
   body: {[key:string]: unknown} | string
   headers?: {[key:string]: string}
 }
