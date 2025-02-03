@@ -27,18 +27,16 @@ const usePostNewTaskForm = () => {
     event.preventDefault();
     setIsSubmitting(SubmissionState.submitting);
   
-    fetcher.post({
+    const {err, res} = await fetcher.post({
       path: ENDPOINTS.TASKS.NEW, 
-      cb: ({err, res}) => {
-        if (err) {
-          setSubmissionError(err)
-        } else {
-          console.log(res)
-          setIsSubmitting(SubmissionState.finished);
-        }
-      },
       body: {title, desc, userId: userLoginData.userId}
     })
+    if (err || !res) {
+      console.warn({err: 'err'})
+    } else {  
+      console.log(res)
+      setIsSubmitting(SubmissionState.finished)
+    }
   }
 
   return {

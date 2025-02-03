@@ -11,12 +11,12 @@ export type FetcherGetArgs<T> = {
 
 export type FetcherPostArgs<T> = {
   path: string
-  cb?: (responseData: FetcherResponse<T | null>) => void
+  cb?: (responseData: FetcherResponse<T>) => unknown
   body: {[key:string]: unknown} | string
   headers?: {[key:string]: string}
 }
 
 export interface FetcherInterface {
-  get<T>(args: FetcherGetArgs<T>): void;
-  post<T>(args: FetcherPostArgs<T>) :void;
+  get<T>(args: FetcherGetArgs<T>): Promise<FetcherResponse<T>>;
+  post<T>(args: FetcherPostArgs<T>) : Promise<FetcherResponse<T>>;
 }

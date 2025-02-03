@@ -12,19 +12,19 @@ const useGetAllTasks = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetcher.post<Tasks>({
-        path: ENDPOINTS.TASKS.GET_ALL, 
-        body: {
-          userId: userLoginData.userId
-        },
-        cb: ({err, res} ) => {
-          if (err || res === null) {
-            setError({err: 'error'})
-          } else {
-            setTaskList(res);
+      (async () => {
+        const {err, res} = await fetcher.post<Tasks>({
+          path: ENDPOINTS.TASKS.GET_ALL, 
+          body: {
+            userId: userLoginData.userId
           }
+        })
+        if (err || !res) {
+          setError({err: ' error'})
+        } else {
+          setTaskList(res)
         }
-      })
+      })()
     }
   }, [userLoginData?.userId, isLoggedIn, fetcher])
 

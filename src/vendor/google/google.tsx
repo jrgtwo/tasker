@@ -1,4 +1,4 @@
-import { useState, useEffect , createContext, useContext} from 'react';
+import { useState, useEffect , createContext, useContext, ReactNode} from 'react';
 import { decodeJwtResponse } from "./utils";
 import { FetcherContext } from '../../utils/FetcherContext';
 import { ENDPOINTS } from '../../constants/endpoints';
@@ -12,15 +12,14 @@ const UserLoginContext = createContext<{
   isLoggedIn: false, userLoginData: null, notifications: []
 })
 
-function UserLoginProvider({ children }) {
+function UserLoginProvider({ children }: { children: ReactNode}) {
 
   const fetcher = useContext(FetcherContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userLoginData, setUserLoginData] = useState<User>(null);
+  const [userLoginData, setUserLoginData] = useState<User>();
   const [notifications, setNotifications] = useState<unknown[]>([])
   
    useEffect(() => {
-    console.log('===init')
     google?.accounts?.id.initialize({
       client_id: import.meta.env.VITE_GOOGLE_API_KEY,
       callback: async (response) => {
@@ -37,14 +36,13 @@ function UserLoginProvider({ children }) {
           }
         });
 
-        if (err) {
+        if (err || !res) {
           console.warn(err);
 
         } else {
           setIsLoggedIn(true);
           setUserLoginData(res);
         }
-
       }
     });
 

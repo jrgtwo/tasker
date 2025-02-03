@@ -1,2 +1,3 @@
 /// <reference types="vite/client" />
-declare const google: any
+import type { GoogleApis } from "googleapis"
+declare const google: GoogleApis

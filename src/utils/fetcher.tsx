@@ -34,7 +34,7 @@ class Fetcher implements FetcherInterface{
   }
 
   async post<ResType>({path, cb, body}: FetcherPostArgs<ResType>) {
-    const output: FetcherResponse<ResType | null> = defaultResponse;
+    const output: FetcherResponse<ResType> = defaultResponse;
 
     try {
       const reqBody = typeof body === 'string' ? body: JSON.stringify(body)
@@ -54,9 +54,13 @@ class Fetcher implements FetcherInterface{
       console.warn('Error Received: ', err);
       output.err = new Error(`Error: ${err}`)
     }
-  
-    return cb ? cb(output): output
+    
+    if (typeof cb === 'function') cb(output)
+
+    return output
   } 
+
+  
 }
 
 export { Fetcher}
