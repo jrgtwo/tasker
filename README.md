@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+<!-- # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -47,4 +47,24 @@ export default tseslint.config({
     ...react.configs['jsx-runtime'].rules,
   },
 })
+``` -->
+
+1. `npm install`
+
+2. `mkcert -install`
+
+3. `mkcert local.tasker.com`
+
+4. Install database dependencies <-- coming soon
+
+5. Create `env.development` in root directory
+
 ```
+VITE_GOOGLE_API_KEY={{ID}}.apps.googleusercontent.com
+VITE_SSL_KEY={{pem_location}}
+VITE_SSL_CERT={{cert_location}}
+VITE_ALLOWED_HOST={{allowed_connections}}
+VITE_API_URL={{api_url}}
+```
+
+6. `npm run dev`
