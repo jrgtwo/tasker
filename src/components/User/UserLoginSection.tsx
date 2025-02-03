@@ -18,7 +18,7 @@ const LoggedIn = () => {
       <h4>Login section</h4>
       <p>Is Logged In: {`${isLoggedIn}`}</p>
       {isLoggedIn && (
-        <img src={`${userLoginData.picture}`} />
+        <img src={`${userLoginData?.picture}`} />
       )}
       <ul>{
         notifications.map((item) => (

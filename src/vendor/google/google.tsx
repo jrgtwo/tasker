@@ -6,7 +6,7 @@ import type { User } from './../../components/User/Types'
 
 const UserLoginContext = createContext<{
   isLoggedIn: boolean,
-  userLoginData: null | unknown,
+  userLoginData: User | null,
   notifications: unknown[]
 }>({
   isLoggedIn: false, userLoginData: null, notifications: []

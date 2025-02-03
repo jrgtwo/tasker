@@ -11,7 +11,7 @@ const useGetAllTasks = () => {
   const fetcher = useContext(FetcherContext);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && userLoginData?.userId) {
       (async () => {
         const {err, res} = await fetcher.post<Tasks>({
           path: ENDPOINTS.TASKS.GET_ALL, 

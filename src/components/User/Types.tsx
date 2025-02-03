@@ -5,6 +5,7 @@ export type User = {
   id: string | number,
   lastlogin: string,
   lname:  string,
-  userId: string
+  userId: string,
+  picture: string
 }
 

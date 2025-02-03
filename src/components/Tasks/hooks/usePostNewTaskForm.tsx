@@ -26,17 +26,22 @@ const usePostNewTaskForm = () => {
   const submitTask = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setIsSubmitting(SubmissionState.submitting);
-  
+
+    if (!userLoginData) return setSubmissionError(new Error('no user id'))
+
     const {err, res} = await fetcher.post({
       path: ENDPOINTS.TASKS.NEW, 
       body: {title, desc, userId: userLoginData.userId}
     })
     if (err || !res) {
       console.warn({err: 'err'})
+      setSubmissionError(err)
     } else {  
       console.log(res)
       setIsSubmitting(SubmissionState.finished)
     }
+    
+
   }
 
   return {
