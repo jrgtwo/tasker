@@ -2,16 +2,17 @@ import { BrowserRouter, Routes, Route } from 'react-router'
 import { Home } from './components/main/Home/Home'
 import { Tasks } from './components/Tasks/Tasks'
 import { Task } from './components/Tasks/Task';
+import { MainHeader } from './components/main/MainHeader/MainHeader';
+import { MainFooter } from './components/main/MainFooter/MainFooter';
 import { NewTask } from './components/Tasks/NewTask';
-import { UserLoginSection } from './components/User/UserLoginSection' 
-import {  UserLoginProvider } from "./vendor/google/google"
+import {  UserLoginProvider } from "./vendor/google/google";
 
 function App() {
   return (
     <>
       <UserLoginProvider>
-        <UserLoginSection />
         <BrowserRouter>
+          <MainHeader />
           <Routes>
             <Route index element={<Home />} />
             <Route path="/tasks">
@@ -20,6 +21,7 @@ function App() {
               <Route path=":id" element={<Task />} />
             </Route>
           </Routes>
+          <MainFooter />
         </BrowserRouter>
       </UserLoginProvider>
     </>

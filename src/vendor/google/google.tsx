@@ -18,10 +18,14 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userLoginData, setUserLoginData] = useState<User>();
   const [notifications, setNotifications] = useState<unknown[]>([])
-  
+  const [localUserId] = useState(sessionStorage.getItem('taskesr::userId'))
    useEffect(() => {
+    
     google?.accounts?.id.initialize({
       client_id: import.meta.env.VITE_GOOGLE_API_KEY,
+      auto_select: true,
+      login_hint: userLoginData?.userId || localUserId || undefined,
+      cancel_on_tap_outside: false,
       callback: async (response) => {
         const responsePayload = decodeJwtResponse(response.credential);
   
@@ -42,10 +46,11 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
         } else {
           setIsLoggedIn(true);
           setUserLoginData(res);
+          sessionStorage.setItem('taskser::userId', responsePayload.userId)
         }
       }
     });
-
+    // google.accounts.id.storeCredential
     google?.accounts.id.prompt((notification) => {
       console.log('!===notification', notification)
       setNotifications((prevNotifications) => ([
