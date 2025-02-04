@@ -1,6 +1,5 @@
-//import { useGoogleLogin } from "../../vendor/google/google";
 import { useContext } from 'react'
-import { UserLoginContext } from "../../vendor/google/google"
+import { UserLoginContext } from '../../context/UserLogin/UserLoginContext'
 
 const LoggedOut = () => {
   return (
@@ -11,7 +10,7 @@ const LoggedOut = () => {
 }
 
 const LoggedIn = () => {
-  const { isLoggedIn, userLoginData, notifications } = useContext(UserLoginContext)
+  const { isLoggedIn, userLoginData } = useContext(UserLoginContext)
   return (
   <>
     <div>
@@ -20,11 +19,6 @@ const LoggedIn = () => {
       {isLoggedIn && (
         <img src={`${userLoginData?.picture}`} />
       )}
-      <ul>{
-        notifications.map((item) => (
-          <li>{JSON.stringify(item)}</li>
-        ))
-      }</ul>
       <p>{JSON.stringify(userLoginData)}</p>
     </div>
     </>

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { FetcherContext } from '../../../utils/FetcherContext';
 import { ENDPOINTS } from '../../../constants/endpoints';
 import type {Task, TaskError } from '../Types';
-import { UserLoginContext } from '../../../vendor/google/google';
+import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
 
 const useGetTask = (id:Task["id"] | undefined) => {
   const {isLoggedIn, userLoginData} = useContext(UserLoginContext);

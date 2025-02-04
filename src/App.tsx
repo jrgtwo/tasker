@@ -5,7 +5,7 @@ import { Task } from './components/Tasks/Task';
 import { MainHeader } from './components/main/MainHeader/MainHeader';
 import { MainFooter } from './components/main/MainFooter/MainFooter';
 import { NewTask } from './components/Tasks/NewTask';
-import {  UserLoginProvider } from "./vendor/google/google";
+import {  UserLoginProvider } from './context/UserLogin/UserLoginProvider'
 
 function App() {
   return (

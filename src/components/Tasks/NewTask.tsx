@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router';
 import { usePostNewTaskForm } from './hooks/usePostNewTaskForm'
 import { SubmissionState } from './constants/submissionStates';
-import { UserLoginContext } from '../../vendor/google/google';
+import { UserLoginContext } from './../../context/UserLogin/UserLoginContext'
 
 const NewTask = () => {
   const  { isLoggedIn } = useContext(UserLoginContext)

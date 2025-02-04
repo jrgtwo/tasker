@@ -4,7 +4,7 @@ import type { FetcherResponse } from '../../../utils/FetcherTypes';
 import type { Task } from './../Types';
 import { SubmissionState } from '../constants/submissionStates';
 import { ENDPOINTS } from '../../../constants/endpoints';
-import { UserLoginContext } from '../../../vendor/google/google';
+import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
 
 const usePostNewTaskForm = () => {
   const fetcher = useContext(FetcherContext);
@@ -40,8 +40,6 @@ const usePostNewTaskForm = () => {
       console.log(res)
       setIsSubmitting(SubmissionState.finished)
     }
-    
-
   }
 
   return {
