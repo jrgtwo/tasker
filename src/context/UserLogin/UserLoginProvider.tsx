@@ -3,7 +3,7 @@ import { ENDPOINTS } from '../../constants/endpoints';
 import { UserLoginContext } from "./UserLoginContext";
 import { FetcherContext } from "../../utils/FetcherContext";
 import type { User } from './../../components/User/Types'
-import { googleLoginInit } from './../../vendor/google/google'
+import { googleLoginInit, openGoogleLoginPrompt } from './../../vendor/google/google'
 import { FetcherResponse } from '../../utils/FetcherTypes';
 import { toLoginRequestBody } from './utils'
 
@@ -17,22 +17,18 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
   const [localUserData] = useState<string | null>(JSON.parse(sessionStorage.getItem('tasker::userData') || 'null'))
 
   useEffect(() => {
-    googleLoginInit({
-      config: { 
-        userId: localUserId || undefined, apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-      }
-    }).then((googleLoginData) => {
+    googleLoginInit().then((googleLoginData) => {
       setGoogleLoginData(googleLoginData)
     })
   }, [localUserId])
 
   useEffect(() => {
-    if (!localUserId) google?.accounts.id.prompt();
+    if (!localUserId) openGoogleLoginPrompt()
    }, [localUserId]);
 
    useEffect(() => {
 
-    if (!localUserId || googleLoginData) {
+    if (localUserId || googleLoginData) {
 
       const requestBody = toLoginRequestBody({localUserId, googleLoginData})
 
