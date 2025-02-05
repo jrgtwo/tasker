@@ -1,4 +1,12 @@
-const toLoginRequestBody = ({localUserId, googleLoginData}) => (
+import { GoogleLoginData } from './../../components/User/Types'
+
+const toLoginRequestBody = ({
+  localUserId, 
+  googleLoginData
+}: {
+  localUserId: string,
+  googleLoginData: GoogleLoginData
+}) => (
   googleLoginData ? {
     userId: googleLoginData?.sub,
     fname: googleLoginData?.given_name,

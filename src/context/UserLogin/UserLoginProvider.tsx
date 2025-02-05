@@ -6,14 +6,8 @@ import type { User } from './../../components/User/Types'
 import { googleLoginInit, openGoogleLoginPrompt } from './../../vendor/google/google'
 import { FetcherResponse } from '../../utils/FetcherTypes';
 import { toLoginRequestBody } from './utils'
+import { LOGIN_STATES } from './constants';
 
-enum LOGIN_STATES {
-  INITIALIZE,
-  LOCAL_CHECKED,
-  GOOGLE_SIGNED_IN,
-  LOGGED_IN,
-  LOGGED_OUT
-}
 const expirationDate = () => new Date(
   Date.now() + (7 * (24 * 60 * 60 * 1000))
 ).toDateString()

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router'
+import './App.css';
 import { Home } from './components/main/Home/Home'
 import { Tasks } from './components/Tasks/Tasks'
 import { Task } from './components/Tasks/Task';
