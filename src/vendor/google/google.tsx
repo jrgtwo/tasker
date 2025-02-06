@@ -15,6 +15,9 @@ const googleLoginInit = () => {
   })
 }
 
-const openGoogleLoginPrompt = () => google?.accounts.id.prompt();
+const openGoogleLoginPrompt = () => {
+  console.log('open-prompt')
+  google?.accounts.id.prompt();
+}
 
 export { googleLoginInit, openGoogleLoginPrompt }

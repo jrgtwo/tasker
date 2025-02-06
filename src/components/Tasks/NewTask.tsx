@@ -20,22 +20,38 @@ const NewTask = () => {
         ?
           <>
           <p><Link to="/tasks">{`<-`} Back to Tasks</Link></p>
-            <form>
+            <form className="text-center flex flex-col">
               {
                 submissionError &&
                 <h3>Sorry There was an error: {`${JSON.stringify(submissionError)}`}</h3>
               }
-              <div>
-                <label htmlFor='title'>Title</label>
-                <input type="text" id="title" name="title" onChange={onTitleChange}/>
-              </div>
-              <div>
-                <label htmlFor='desc'>Description</label>
-                <input type="text" id="desc" name="desc" onChange={onDescChange}/>
-              </div>
+              
+              <input 
+                type="text" 
+                placeholder="What Do You Need To Do"
+                id="title" 
+                name="title" 
+                onChange={onTitleChange}
+                className="bg-white rounded-2xl text-2xl/2 text-slate-600 p-2"
+              />
+            
+            
+              {/*<input 
+                type="text" 
+                id="desc" 
+                name="desc" 
+                onChange={onDescChange}/>*/}
+
+                <textarea
+                placeholder="Add some notes here :)"
+                className="bg-white rounded-2xl text-med/2 text-slate-600 p-2 mt-4"
+                  ></textarea>
+              
               <button 
                 disabled={isSubmitting !== SubmissionState.init || !!submissionError} 
-                onClick={submitTask}>Submit Task</button>
+                onClick={submitTask}
+                className="bg-amber-500/90 w-2xs mx-auto rounded-2xl text-2xl/12 shadow-md shadow-gray-300 block mt-4"  
+              >Save Task</button>
             </form>
           </>
         : <p>Please Login</p>

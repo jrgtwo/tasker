@@ -10,16 +10,13 @@ const LoggedOut = () => {
 }
 
 const LoggedIn = () => {
-  const { isLoggedIn, userLoginData } = useContext(UserLoginContext)
+  const { userLoginData } = useContext(UserLoginContext)
   return (
   <>
     <div>
-      <h4>Login section</h4>
-      <p>Is Logged In: {`${isLoggedIn}`}</p>
-      {isLoggedIn && (
-        <img src={`${userLoginData?.picture}`} />
-      )}
-      <p>{JSON.stringify(userLoginData)}</p>
+      <img 
+        src={`${userLoginData?.picture}`} 
+        className="rounded-full w-12 outline-1 outline-amber-200"/>
     </div>
     </>
   )
@@ -29,11 +26,11 @@ const OtherComponent = () => {
   const { isLoggedIn } = useContext(UserLoginContext)
 
   return (
-    <>{
+    <div className="absolute right-5 top-6">{
       isLoggedIn
         ? <LoggedIn />
         : <LoggedOut />
-    }</>
+    }</div>
   )
 }
 const UserLoginSection = () => {

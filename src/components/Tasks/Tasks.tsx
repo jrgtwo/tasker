@@ -10,8 +10,8 @@ const Tasks = () => {
   
   return (
     <>
-      <h1>Task List</h1>
-      <Link to="/tasks/new">Add a new Task {`-->`}</Link>
+    <Link to="/tasks/new" className="underline cursor-pointer text-white">Add a new Task {`-->`}</Link>
+      <h1 className="font-bold text-left text-2xl">Your Tasks</h1>
       {
         (!taskList || taskFetchError)
           ? (

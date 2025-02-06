@@ -39,6 +39,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.LOCAL_CHECKED) {
+      console.log('===init google')
       googleLoginInit().then((googleLoginData) => {
         setGoogleLoginData(googleLoginData)
         setLoginState(LOGIN_STATES.GOOGLE_SIGNED_IN)
