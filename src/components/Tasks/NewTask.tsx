@@ -50,7 +50,7 @@ const NewTask = () => {
               <button 
                 disabled={isSubmitting !== SubmissionState.init || !!submissionError} 
                 onClick={submitTask}
-                className="bg-amber-500/90 w-2xs mx-auto rounded-2xl text-2xl/12 shadow-md shadow-gray-300 block mt-4"  
+                className="bg-amber-500/90 w-2xs mx-auto rounded-2xl text-2xl/12 shadow-md shadow-gray-300 block mt-4 "  
               >Save Task</button>
             </form>
           </>

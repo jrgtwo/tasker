@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { useGetAllTasks } from './hooks/useGetAllTasks';
 import { TaskListElements } from './helpers/TaskListElements';
 
@@ -10,8 +9,7 @@ const Tasks = () => {
   
   return (
     <>
-    <Link to="/tasks/new" className="underline cursor-pointer text-white">Add a new Task {`-->`}</Link>
-      <h1 className="font-bold text-left text-2xl">Your Tasks</h1>
+      <h1 className="text-left text-xl/7 font-semibold text-white-900">Your Tasks</h1>
       {
         (!taskList || taskFetchError)
           ? (

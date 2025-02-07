@@ -11,11 +11,12 @@ const MainHeader = () => {
           <Link 
             to="/" 
             className="text-zinc-200 mx-auto text-5xl/24 font-black">
-            {/*Tasker*/}-
+            Tasker
           </Link>
         </h1>
       
       <UserLoginSection/>
+      <MainMenu />
     </header>
   )
 }
