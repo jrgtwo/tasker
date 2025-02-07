@@ -11,7 +11,7 @@ const useGetTask = (id:Task["id"] | undefined) => {
   const [error, setError] = useState<TaskError>();
 
   useEffect(() => {
-    if (isLoggedIn && userLoginData?.userId) {
+    if (isLoggedIn && userLoginData?.userId && id) {
       fetcher.post<Task>({
         path: ENDPOINTS.TASKS.GET_BY_ID(id),
         body: {
@@ -27,7 +27,6 @@ const useGetTask = (id:Task["id"] | undefined) => {
       })
     }
   },[fetcher, id,userLoginData?.userId, isLoggedIn]);
-
   return { task, error}
 }
 

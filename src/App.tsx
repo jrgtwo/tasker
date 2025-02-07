@@ -13,7 +13,7 @@ function App() {
       <UserLoginProvider>
         <BrowserRouter>
           <MainHeader/>
-            <section className="w-xl mx-auto mt-12 mb-12 text-center">
+            <section className="w-xl mx-auto mt-12 mb-12">
             <Routes>
               <Route index element={<Tasks />} />
               <Route path="/tasks">
