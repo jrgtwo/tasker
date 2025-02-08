@@ -8,15 +8,15 @@ const TaskListElements = ({
 }) => {
   return (
     <ul 
-      className="w-full py-4 px-4 mt-8 outline-1 outline-white/10 mx-auto flex flex-col rounded-lg gap-8 "
+      className="bg-slate-800/20 w-full py-4 px-4 mt-8 border-1 border-white/10 mx-auto flex flex-col rounded-lg gap-8 "
     >{
       taskList?.map((task, index) => (
         <li
           key={`${task.title.split(' ').join('')}${index}`}
-          className="bg-slate-900/50 hover:bg-linear-to-b from-slate-800/50 to-slate-900 outline-offset-1 outline-white/15 outline w-full rounded-lg text-left hover:shadow-md hover:shadow-slate-950 hover:inset-shadow hover:inset-shadow-slate-900/10 hover:inset-shadow-xs "
+          className="bg-slate-800/20 hover:bg-slate-900/20  border-white/15 border-1 w-full rounded-lg text-left shadow-sm hover:shadow-md shadow-black hover:inset-shadow hover:inset-shadow-slate-900/10 hover:inset-shadow-xs "
         >
           <Link 
-            className="text-white px-4 py-4 w-full h-full block font-semibold"
+            className="opacity-70 hover:opacity-100 text-white px-4 py-4 w-full h-full block font-semibold"
             to={`/tasks/${task.id}`} >
             <input 
               type="checkbox" 

@@ -4,6 +4,14 @@ import { usePostNewTaskForm } from './hooks/usePostNewTaskForm'
 import { SubmissionState } from './constants/submissionStates';
 import { UserLoginContext } from './../../context/UserLogin/UserLoginContext'
 
+const getDate = () => {
+  const now = new Date();
+  const day = `${now.getDate()}`.padStart(2,'0');
+  const month = `${now.getMonth() + 1}`.padStart(2,'0')
+  const year = `${now.getFullYear()}`.padStart(2,'0')
+  return `${year}-${month}-${day}`
+}
+
 const NewTask = () => {
   const  { isLoggedIn } = useContext(UserLoginContext)
   const {
@@ -13,6 +21,11 @@ const NewTask = () => {
     isSubmitting,
     submissionError
   } = usePostNewTaskForm();
+
+  
+
+  
+  
 
   return (
     <>{
@@ -56,6 +69,7 @@ const NewTask = () => {
                 <input 
                   name="date" 
                   type="date" 
+                  min={getDate()}
                   className="w-min px-4 bg-slate-700 border-1 border-white/10 rounded-lg"/>
               </div>
               
