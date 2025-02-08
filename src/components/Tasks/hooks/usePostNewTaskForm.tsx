@@ -19,7 +19,7 @@ const usePostNewTaskForm = () => {
   const onTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value)
   }
-  const onDescChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onDescChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setDesc(event.target.value)
   }
 

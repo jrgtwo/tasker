@@ -19,7 +19,6 @@ const NewTask = () => {
       isLoggedIn
         ?
           <>
-          <p><Link to="/tasks">{`<-`} Back to Tasks</Link></p>
             <form className="text-center flex flex-col">
               {
                 submissionError &&
@@ -32,26 +31,42 @@ const NewTask = () => {
                 id="title" 
                 name="title" 
                 onChange={onTitleChange}
-                className="bg-white rounded-2xl text-2xl/2 text-slate-600 p-2"
+                className="border-1 border-white/10 p-4 bg-slate-800 rounded-lg font-semibold text-2xl/2 text-white/90 focus:outline-1 focus:outline-offset-1"
               />
             
-            
-              {/*<input 
-                type="text" 
-                id="desc" 
-                name="desc" 
-                onChange={onDescChange}/>*/}
+              <textarea
+                placeholder="Add some notes here"
+                onChange={onDescChange}
+                className="border-1 border-white/10 bg-slate-800 rounded-lg text-med/2 text-white/90 p-4 mt-6 focus:outline-1 focus-outline-offsest-1"
+              ></textarea>
 
-                <textarea
-                placeholder="Add some notes here :)"
-                className="bg-white rounded-2xl text-med/2 text-slate-600 p-2 mt-4"
-                  ></textarea>
+                <button
+                  className="items-center gap-2 flex flex-row hover:cursor-pointer my-4 outline-1 hover:outline-2 outline-white/20 w-min px-6 py-2 rounded-lg outline-offset-1">
+                  <input type="checkbox"/>
+                  <span>Public</span>
+                </button>
+
+              <div
+                className="flex ">
+                <label 
+                  htmlFor="date"
+                  className="my-4 mr-4 font-semibold">
+                    Due Date:
+                </label>
+                <input 
+                  name="date" 
+                  type="date" 
+                  className="w-min px-4 bg-slate-700 border-1 border-white/10 rounded-lg"/>
+              </div>
+              
               
               <button 
                 disabled={isSubmitting !== SubmissionState.init || !!submissionError} 
                 onClick={submitTask}
-                className="bg-amber-500/90 w-2xs mx-auto rounded-2xl text-2xl/12 shadow-md shadow-gray-300 block mt-4 "  
+                className="mt-8 border-1 border-white/20 w-2xs mx-auto rounded-lg text-2xl/12 hover:cursor-pointer hover:border-white/50"  
               >Save Task</button>
+
+              
             </form>
           </>
         : <p>Please Login</p>
