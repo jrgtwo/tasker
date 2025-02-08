@@ -4,8 +4,8 @@ const toLoginRequestBody = ({
   localUserId, 
   googleLoginData
 }: {
-  localUserId: string,
-  googleLoginData: GoogleLoginData
+  localUserId: string | null,
+  googleLoginData: GoogleLoginData | null
 }) => (
   googleLoginData ? {
     userId: googleLoginData?.sub,

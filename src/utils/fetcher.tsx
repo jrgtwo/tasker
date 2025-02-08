@@ -2,13 +2,12 @@ import type {
   FetcherResponse, 
   FetcherConstructorArgs, 
   FetcherGetArgs,
-  FetcherPostArgs,
-  FetcherInterface
+  FetcherPostArgs
 } from "./FetcherTypes";
 
 const defaultResponse = {err: null, res: null};
 
-class Fetcher implements FetcherInterface{
+class Fetcher {
   #BASE_URL!: string
 
   constructor({ BASE_URL }: FetcherConstructorArgs) {

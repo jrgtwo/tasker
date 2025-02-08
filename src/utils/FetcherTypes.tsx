@@ -15,8 +15,3 @@ export type FetcherPostArgs<T> = {
   body: {[key:string]: unknown} | string
   headers?: {[key:string]: string}
 }
-
-export interface FetcherInterface {
-  get<T>(args: FetcherGetArgs<T>): Promise<FetcherResponse<T>>;
-  post<T>(args: FetcherPostArgs<T>) : Promise<FetcherResponse<T>>;
-}

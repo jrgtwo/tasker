@@ -2,7 +2,7 @@ import { useContext, useState, useEffect, type ReactNode } from 'react';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { UserLoginContext } from "./UserLoginContext";
 import { FetcherContext } from "../../utils/FetcherContext";
-import type { User } from './../../components/User/Types'
+import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, openGoogleLoginPrompt } from './../../vendor/google/google'
 import { FetcherResponse } from '../../utils/FetcherTypes';
 import { toLoginRequestBody } from './utils'
@@ -17,9 +17,9 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
   const fetcher = useContext(FetcherContext)
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [googleLoginData, setGoogleLoginData] = useState<unknown | null>(null)
+  const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
   const [userLoginData, setUserLoginData] = useState<User | null>(null);
-  const [localUserId] = useState<{res: boolean, expiry: string} | null>(JSON.parse(sessionStorage.getItem('tasker::userId') || 'null'))
+  const [localUserId] = useState<{value: string, expiry: string} | null>(JSON.parse(sessionStorage.getItem('tasker::userId') || 'null'))
   const [localUserData] = useState<{res: User, expiry: string} | null>(JSON.parse(sessionStorage.getItem('tasker::userData') || 'null'))
 
   useEffect(() => {
@@ -41,7 +41,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
     if (loginState === LOGIN_STATES.LOCAL_CHECKED) {
       console.log('===init google')
       googleLoginInit().then((googleLoginData) => {
-        setGoogleLoginData(googleLoginData)
+        if (googleLoginData) setGoogleLoginData(googleLoginData)
         setLoginState(LOGIN_STATES.GOOGLE_SIGNED_IN)
       })
       openGoogleLoginPrompt()
@@ -50,7 +50,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.GOOGLE_SIGNED_IN) {
-      const requestBody = toLoginRequestBody({localUserId, googleLoginData})
+      const requestBody = toLoginRequestBody({localUserId: localUserId?.value || null, googleLoginData})
 
       fetcher.post<User>({
         path: ENDPOINTS.USER.LOGIN,
