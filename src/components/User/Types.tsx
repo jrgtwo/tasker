@@ -6,8 +6,10 @@ export type User = {
   lastlogin: string,
   lname:  string,
   userId: string,
-  picture: string
+  picture: string,
+  dueDate: string
 }
+
 
 export type GoogleLoginData = {
   sub: string, 

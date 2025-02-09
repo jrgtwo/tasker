@@ -25,7 +25,9 @@ function useFetcher<T> ({endpoint, body, method = Methods.get}: {endpoint:string
   const [error, setError] = useState<Error | null>(null)
   
   useEffect(() => {
+
     setStage(FETCHER_STAGES.PRE);
+    
     if (endpoint && body && method)
     (async () => {
       setStage(FETCHER_STAGES.IN_PROGRESS)

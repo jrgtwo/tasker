@@ -1,31 +1,19 @@
 import { useContext } from 'react';
-import { Link } from 'react-router';
 import { usePostNewTaskForm } from './hooks/usePostNewTaskForm'
 import { SubmissionState } from './constants/submissionStates';
 import { UserLoginContext } from './../../context/UserLogin/UserLoginContext'
-
-const getDate = () => {
-  const now = new Date();
-  const day = `${now.getDate()}`.padStart(2,'0');
-  const month = `${now.getMonth() + 1}`.padStart(2,'0')
-  const year = `${now.getFullYear()}`.padStart(2,'0')
-  return `${year}-${month}-${day}`
-}
+import { getDate } from '../../utils/getDate';
 
 const NewTask = () => {
   const  { isLoggedIn } = useContext(UserLoginContext)
   const {
     onTitleChange,
     onDescChange,
+    onDateChange,
     submitTask,
     isSubmitting,
     submissionError
   } = usePostNewTaskForm();
-
-  
-
-  
-  
 
   return (
     <>{
@@ -70,9 +58,9 @@ const NewTask = () => {
                   name="date" 
                   type="date" 
                   min={getDate()}
+                  onChange={onDateChange}
                   className="w-min px-4 bg-slate-700 border-1 border-white/10 rounded-lg"/>
               </div>
-              
               
               <button 
                 disabled={isSubmitting !== SubmissionState.init || !!submissionError} 
@@ -80,7 +68,6 @@ const NewTask = () => {
                 className="mt-8 border-1 border-white/20 w-2xs mx-auto rounded-lg text-2xl/12 hover:cursor-pointer hover:border-white/50"  
               >Save Task</button>
 
-              
             </form>
           </>
         : <p>Please Login</p>

@@ -16,22 +16,35 @@ const usePostNewTaskForm = () => {
   const [title, setTitle] = useState<string | null>(null)
   const [desc, setDesc] = useState<string | null>(null)
 
+  const [dueDate, setDueDate] = useState<string|null>(null)
+
   const onTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value)
   }
+
   const onDescChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setDesc(event.target.value)
   }
 
+  const onDateChange = (event: ChangeEvent<HTMLDataElement>) => {
+    setDueDate(event.target.value)
+  }
+
   const submitTask = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+
     setIsSubmitting(SubmissionState.submitting);
 
     if (!userLoginData) return setSubmissionError(new Error('no user id'))
 
     const {err, res} = await fetcher.post({
       path: ENDPOINTS.TASKS.NEW, 
-      body: {title, desc, userId: userLoginData.userId}
+      body: {
+        title, 
+        desc, 
+        userId: userLoginData.userId,
+        dueDate
+      }
     })
     if (err || !res) {
       console.warn({err: 'err'})
@@ -47,7 +60,8 @@ const usePostNewTaskForm = () => {
     onDescChange,
     submitTask,
     isSubmitting,
-    submissionError
+    submissionError,
+    onDateChange
   }
 }
 
