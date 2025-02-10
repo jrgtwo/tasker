@@ -7,7 +7,8 @@ export type User = {
   lname:  string,
   userId: string,
   picture: string,
-  dueDate: string
+  dueDate: string,
+  private: boolean
 }
 
 

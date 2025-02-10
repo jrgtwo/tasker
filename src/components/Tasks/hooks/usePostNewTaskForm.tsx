@@ -18,6 +18,8 @@ const usePostNewTaskForm = () => {
 
   const [dueDate, setDueDate] = useState<string|null>(null)
 
+  const [isPublic, setIsPublic] = useState<boolean>(true)
+
   const onTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value)
   }
@@ -28,6 +30,10 @@ const usePostNewTaskForm = () => {
 
   const onDateChange = (event: ChangeEvent<HTMLDataElement>) => {
     setDueDate(event.target.value)
+  }
+
+  const onisPublicChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsPublic(!!event.target.value)
   }
 
   const submitTask = async (event: MouseEvent<HTMLButtonElement>) => {
@@ -43,7 +49,8 @@ const usePostNewTaskForm = () => {
         title, 
         desc, 
         userId: userLoginData.userId,
-        dueDate
+        dueDate,
+        isPublic
       }
     })
     if (err || !res) {
