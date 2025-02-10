@@ -35,7 +35,7 @@ const Task = () => {
                 <button
                   className="items-center gap-2 flex flex-row hover:cursor-pointer my-4 outline-1 hover:outline-2 outline-white/20 w-min px-6 py-2 rounded-lg outline-offset-1">
                   <input type="checkbox" checked={!!task.public}/>
-                  <span>{task.public ? 'Private': 'Public'}</span>
+                  <span>Public</span>
                 </button>
 
                 <button

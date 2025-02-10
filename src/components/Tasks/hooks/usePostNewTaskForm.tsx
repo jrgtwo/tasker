@@ -32,7 +32,7 @@ const usePostNewTaskForm = () => {
     setDueDate(event.target.value)
   }
 
-  const onisPublicChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onIsPublicChange = (event: ChangeEvent<HTMLInputElement>) => {
     setIsPublic(!!event.target.value)
   }
 
@@ -64,11 +64,12 @@ const usePostNewTaskForm = () => {
 
   return {
     onTitleChange,
+    onDateChange,
     onDescChange,
+    onIsPublicChange,
     submitTask,
     isSubmitting,
-    submissionError,
-    onDateChange
+    submissionError
   }
 }
 

@@ -21,6 +21,7 @@ const TaskListElements = ({
             <input 
               type="checkbox" 
               className="mr-2"
+              checked={!!task.completed}
               />
             { task.title }
           </Link>
