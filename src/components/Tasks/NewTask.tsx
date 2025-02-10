@@ -11,9 +11,11 @@ const NewTask = () => {
     onDescChange,
     onDateChange,
     onIsPublicChange,
+    onIsPublicClick,
     submitTask,
     isSubmitting,
-    submissionError
+    submissionError,
+    isPublic
   } = usePostNewTaskForm();
 
   return (
@@ -21,7 +23,9 @@ const NewTask = () => {
       isLoggedIn
         ?
           <>
-            <form className="text-center flex flex-col">
+            <form className="text-center flex flex-col" onSubmit={(event) => {
+              event.preventDefault()
+            }}>
               {
                 submissionError &&
                 <h3>Sorry There was an error: {`${JSON.stringify(submissionError)}`}</h3>
@@ -41,12 +45,13 @@ const NewTask = () => {
                 onChange={onDescChange}
                 className="border-1 border-white/10 bg-slate-800 rounded-lg text-med/2 text-white/90 p-4 mt-6 focus:outline-1 focus-outline-offsest-1"
               ></textarea>
-
+                <h2>HEY:{`${isPublic}`}</h2>
                 <button
-                  className="items-center gap-2 flex flex-row hover:cursor-pointer my-4 outline-1 hover:outline-2 outline-white/20 w-min px-6 py-2 rounded-lg outline-offset-1">
+                  className="items-center gap-2 flex flex-row hover:cursor-pointer my-4 outline-1 hover:outline-2 outline-white/20 w-min px-6 py-2 rounded-lg outline-offset-1"
+                  onClick={(event) => onIsPublicClick(event, !!isPublic)}>
                   <input 
                     type="checkbox"
-                    onChange={onIsPublicChange}/>
+                    checked={!!isPublic}/>
                   <span>Public</span>
                 </button>
 
