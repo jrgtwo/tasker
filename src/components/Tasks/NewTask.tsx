@@ -10,12 +10,9 @@ const NewTask = () => {
     onTitleChange,
     onDescChange,
     onDateChange,
-    onIsPublicChange,
-    onIsPublicClick,
     submitTask,
     isSubmitting,
     submissionError,
-    isPublic
   } = usePostNewTaskForm();
 
   return (
@@ -45,15 +42,6 @@ const NewTask = () => {
                 onChange={onDescChange}
                 className="border-1 border-white/10 bg-slate-800 rounded-lg text-med/2 text-white/90 p-4 mt-6 focus:outline-1 focus-outline-offsest-1"
               ></textarea>
-
-                <button
-                  className="items-center gap-2 flex flex-row hover:cursor-pointer my-4 outline-1 hover:outline-2 outline-white/20 w-min px-6 py-2 rounded-lg outline-offset-1"
-                  onClick={(event) => onIsPublicClick(event, !!isPublic)}>
-                  <input 
-                    type="checkbox"
-                    checked={!!isPublic}/>
-                  <span>Public</span>
-                </button>
 
               <div
                 className="flex ">

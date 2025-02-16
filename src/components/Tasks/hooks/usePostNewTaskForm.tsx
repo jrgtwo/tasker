@@ -18,8 +18,6 @@ const usePostNewTaskForm = () => {
 
   const [dueDate, setDueDate] = useState<string|null>(null)
 
-  const [isPublic, setIsPublic] = useState<boolean>(true)
-
   const onTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value)
   }
@@ -32,41 +30,22 @@ const usePostNewTaskForm = () => {
     setDueDate(event.target.value)
   }
 
-  const onIsPublicChange = (event: MouseEvent<HTMLInputElement>) => {
-    event.preventDefault()
-    debugger
-    //setIsPublic(!!event.target.value)
-  }
-
-  const onIsPublicClick = (event: MouseEvent<HTMLButtonElement>, value: boolean) => {
-    event.preventDefault()
-    debugger
-    setIsPublic(!value)
-  }
-
   const submitTask = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     setIsSubmitting(SubmissionState.submitting);
 
     if (!userLoginData) return setSubmissionError(new Error('no user id'))
-      debugger
-    console.log({        title, 
-      desc, 
-      userId: userLoginData.userId,
-      dueDate,
-      isPublic
+
+    const {err, res} = await fetcher.post({
+      path: ENDPOINTS.TASKS.NEW, 
+      body: {
+        title, 
+        desc, 
+        userId: userLoginData.userId,
+        dueDate,
+      }
     })
-    // const {err, res} = await fetcher.post({
-    //   path: ENDPOINTS.TASKS.NEW, 
-    //   body: {
-    //     title, 
-    //     desc, 
-    //     userId: userLoginData.userId,
-    //     dueDate,
-    //     isPublic
-    //   }
-    // })
     if (err || !res) {
       console.warn({err: 'err'})
       setSubmissionError(err)
@@ -80,12 +59,9 @@ const usePostNewTaskForm = () => {
     onTitleChange,
     onDateChange,
     onDescChange,
-    onIsPublicClick,
-    onIsPublicChange,
     submitTask,
     isSubmitting,
-    submissionError,
-    isPublic
+    submissionError
   }
 }
 

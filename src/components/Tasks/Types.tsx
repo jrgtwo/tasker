@@ -3,8 +3,8 @@ export type Task = {
   date: string,
   title: string,
   description: string,
-  public: 0 | 1,
-  completed: 0 | 1
+  completed: 0 | 1,
+  due_date: string | null
 }
 
 export type TaskError = {
