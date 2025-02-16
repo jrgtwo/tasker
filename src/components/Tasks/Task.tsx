@@ -5,7 +5,7 @@ import { useGetTask } from './hooks/useGetTask';
 const Task = () => {
   const { id } = useParams()
   const  {task, error: taskError} = useGetTask(id)
-  debugger
+
   return (
     <section 
       className="flex flex-col md:items-left">

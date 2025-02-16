@@ -18,11 +18,6 @@ const TaskListElements = ({
           <Link 
             className="opacity-70 hover:opacity-100 text-white px-4 py-4 w-full h-full block font-semibold"
             to={`/tasks/${task.id}`} >
-            <input 
-              type="checkbox" 
-              className="mr-2"
-              checked={!!task.completed}
-              />
             { task.title }
           </Link>
         </li>
