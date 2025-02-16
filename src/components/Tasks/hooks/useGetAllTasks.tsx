@@ -1,24 +1,18 @@
 import { useEffect, useState, useContext } from 'react';
-import { FetcherContext } from '../../../utils/FetcherContext';
-import { ENDPOINTS } from '../../../constants/endpoints';
 import type {Tasks, TaskError } from '../Types'
 import { UserLoginContext } from '../../../context/UserLogin/UserLoginContext'
+import { StorageSingleton } from '../../../utils/storage';
 
 const useGetAllTasks = () => {
   const { isLoggedIn, userLoginData } = useContext(UserLoginContext);
   const [taskList, setTaskList] = useState<Tasks>();
   const [error, setError] = useState<TaskError>();
-  const fetcher = useContext(FetcherContext);
 
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId) {
       (async () => {
-        const {err, res} = await fetcher.post<Tasks>({
-          path: ENDPOINTS.TASKS.GET_ALL, 
-          body: {
-            userId: userLoginData.userId
-          }
-        })
+        const {err, res} = await StorageSingleton.getAllTasks({userId: userLoginData.userId})
+
         if (err || !res) {
           setError({err: ' error'})
         } else {
@@ -26,7 +20,7 @@ const useGetAllTasks = () => {
         }
       })()
     }
-  }, [userLoginData?.userId, isLoggedIn, fetcher])
+  }, [userLoginData?.userId, isLoggedIn])
 
   return {taskList, error};
 }

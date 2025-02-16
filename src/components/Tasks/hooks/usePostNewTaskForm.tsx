@@ -1,13 +1,12 @@
 import { type ChangeEvent, type MouseEvent, useState, useContext } from 'react';
-import { FetcherContext } from '../../../utils/FetcherContext';
 import type { FetcherResponse } from '../../../utils/FetcherTypes';
 import type { Task } from './../Types';
 import { SubmissionState } from '../constants/submissionStates';
-import { ENDPOINTS } from '../../../constants/endpoints';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
+import { StorageSingleton } from '../../../utils/storage';
 
 const usePostNewTaskForm = () => {
-  const fetcher = useContext(FetcherContext);
+  
   const { userLoginData } = useContext(UserLoginContext);
 
   const [isSubmitting, setIsSubmitting] = useState<SubmissionState>(SubmissionState.init);
@@ -37,14 +36,8 @@ const usePostNewTaskForm = () => {
 
     if (!userLoginData) return setSubmissionError(new Error('no user id'))
 
-    const {err, res} = await fetcher.post({
-      path: ENDPOINTS.TASKS.NEW, 
-      body: {
-        title, 
-        desc, 
-        userId: userLoginData.userId,
-        dueDate,
-      }
+    const {err, res} = await StorageSingleton.postNewTask({
+      title, desc, userId: userLoginData.userId, dueDate
     })
     if (err || !res) {
       console.warn({err: 'err'})

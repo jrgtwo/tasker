@@ -1,32 +1,28 @@
 import { useState, useEffect, useContext } from 'react';
-import { FetcherContext } from '../../../utils/FetcherContext';
-import { ENDPOINTS } from '../../../constants/endpoints';
 import type {Task, TaskError } from '../Types';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
+import { StorageSingleton } from '../../../utils/storage';
 
 const useGetTask = (id:Task["id"] | undefined) => {
   const {isLoggedIn, userLoginData} = useContext(UserLoginContext);
-  const fetcher = useContext(FetcherContext);
   const [task, setTask] = useState<Task|null>();
   const [error, setError] = useState<TaskError>();
 
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId && id) {
-      fetcher.post<Task>({
-        path: ENDPOINTS.TASKS.GET_BY_ID(id),
-        body: {
-          userId: userLoginData.userId
-        },
-        cb: ({err, res}) => {
-          if (err) {
-            setError({err: 'error'})
-          } else {
-            setTask(res)
-          }
+      (async () => {
+        const {err, res} = await StorageSingleton.getTask({
+          taskId: id, userId: userLoginData.userId
+        });
+
+        if (err || !res) {
+          setError({err: 'error'})
+        } else {
+          setTask(res)
         }
-      })
+      })() 
     }
-  },[fetcher, id,userLoginData?.userId, isLoggedIn]);
+  },[id,userLoginData?.userId, isLoggedIn]);
   return { task, error}
 }
 

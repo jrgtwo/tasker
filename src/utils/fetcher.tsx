@@ -28,8 +28,9 @@ class Fetcher {
         output.err = new Error(`Error: ${err}`)
       }
 
-      return cb ? cb(output): output
+      if (typeof cb === 'function') cb(output)
 
+      return output
   }
 
   async post<ResType>({path, cb, body}: FetcherPostArgs<ResType>) {
@@ -47,7 +48,6 @@ class Fetcher {
       });
       const res = await req.json()
 
-      console.log(res)
       output.res = res
     } catch(err) {
       console.warn('Error Received: ', err);
