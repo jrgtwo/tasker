@@ -1,11 +1,8 @@
-import { useContext, useState, useEffect, type ReactNode } from 'react';
-import { ENDPOINTS } from '../../constants/endpoints';
+import { useState, useEffect, type ReactNode } from 'react';
 import { UserLoginContext } from "./UserLoginContext";
-import { FetcherContext } from "../../utils/FetcherContext";
 import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, openGoogleLoginPrompt } from './../../vendor/google/google'
-import { FetcherResponse } from '../../utils/FetcherTypes';
-import { toLoginRequestBody } from './utils'
+import { StorageSingleton } from '../../utils/storage';
 import { LOGIN_STATES } from './constants';
 
 const expirationDate = () => new Date(
@@ -13,8 +10,7 @@ const expirationDate = () => new Date(
 ).toDateString()
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
-  
-  const fetcher = useContext(FetcherContext)
+
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
@@ -39,7 +35,6 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.LOCAL_CHECKED) {
-      console.log('===init google')
       googleLoginInit().then((googleLoginData) => {
         if (googleLoginData) setGoogleLoginData(googleLoginData)
         setLoginState(LOGIN_STATES.GOOGLE_SIGNED_IN)
@@ -50,13 +45,10 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.GOOGLE_SIGNED_IN) {
-      const requestBody = toLoginRequestBody({localUserId: localUserId?.value || null, googleLoginData})
 
-      fetcher.post<User>({
-        path: ENDPOINTS.USER.LOGIN,
-        body: requestBody
-      }).then((data: FetcherResponse<User>)=> {
-        const {err, res} = data
+      (async () => {
+        const { err, res } = await StorageSingleton.login({localUserId, googleLoginData })
+
         const expiry = expirationDate()
         if (err || !res) {
           setLoginState(LOGIN_STATES.LOGGED_OUT)
@@ -76,9 +68,9 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
           )
           setLoginState(LOGIN_STATES.LOGGED_IN)
         }
-      });
+      })()
     }
-  }, [loginState, localUserId, googleLoginData, fetcher])
+  }, [loginState, localUserId, googleLoginData])
    
   useEffect(() => {
     if (loginState === LOGIN_STATES.LOGGED_IN) setIsLoggedIn(true)

@@ -1,6 +1,8 @@
 import type { Tasks, Task } from "../components/Tasks/Types"
+import type { GoogleLoginData, User } from "../components/User/Types"
 import { ENDPOINTS } from "../constants/endpoints"
 import { Fetcher } from "./fetcher"
+import { toLoginRequestBody } from "../context/UserLogin/utils"
 
 class Storage {
   fetcher
@@ -62,6 +64,23 @@ class Storage {
     })
 
     return {err, res}
+  }
+
+  async login({ 
+    googleLoginData, 
+    localUserId
+  }: {
+    googleLoginData: GoogleLoginData | null,
+    localUserId: string | null
+  }) {
+
+    debugger
+     const {err, res} = await this.fetcher.post<User>({
+        path: ENDPOINTS.USER.LOGIN,
+        body: toLoginRequestBody({googleLoginData, localUserId})
+      })
+
+      return {err, res}
   }
 }
 
