@@ -8,7 +8,7 @@ class Storage {
   fetcher
 
   constructor() {
-    this.fetcher = new Fetcher({ BASE_URL: ENDPOINTS.TASKS.BASE_URL })
+    this.fetcher = new Fetcher({ BASE_URL: ENDPOINTS.BASE_URL })
   }
 
   async getTask({
