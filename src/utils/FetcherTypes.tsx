@@ -1,4 +1,4 @@
-export type FetcherResponse<T> = {err: Error | null, res: T | null}
+export type FetcherResponse<T> = {err: Error | string| null, res: T | null}
 
 export type FetcherConstructorArgs = {
   BASE_URL: string

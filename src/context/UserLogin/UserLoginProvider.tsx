@@ -31,7 +31,6 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
       }
     }
   }, [loginState, localUserData, localUserId])
-  
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.LOCAL_CHECKED) {
