@@ -1,38 +1,59 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ENDPOINTS } from '../../constants/endpoints';
 const Tester = () => {
-  const [res, setRes] = useState(null)
-  const [err, setErr] = useState(null)
+
   const [token, setToken] = useState('')
 
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(ENDPOINTS.USER.AUTH, {
+        const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN, {
           method: 'POST',
           body: JSON.stringify({
             data: { "some": "data"},
             headers: new Headers({
               'Accept': 'application/json',
               'Content-type': 'application/json',
-              'Authorization': `Bearer ${token}`
             })
           })
         });
         const res = await req.json()
-        //setRes(res)
         debugger
+        setToken(res)
       } catch (err) {
         debugger
       }
-      
     })()
-    
   }, []) 
+
+  const makeTokenizedResponse = useCallback(async() => {
+    try {
+      const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_VERIFY, {
+        method: 'POST',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+          'authorization': `Bearer ${token}`
+        })
+      })
+
+      const res = await req.json()
+      debugger 
+    } catch (err) {
+      debugger
+      console.log(err)
+    }
+  }, [token])
 
   return (
     <>
-      <h4>Testing requests, check console for test output</h4>
+      <h4>Testing requests, check console for test output {token}</h4>
+      {token && 
+      <button
+        onClick={makeTokenizedResponse}>
+        Check Token Requst
+      </button>
+      }
     </>
   )
 }
