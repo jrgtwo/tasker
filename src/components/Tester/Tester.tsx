@@ -39,6 +39,7 @@ const Tester = () => {
       })
 
       const res = await req.json()
+      console.log(res)
       debugger 
     } catch (err) {
       debugger
