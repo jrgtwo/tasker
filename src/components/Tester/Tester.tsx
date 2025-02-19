@@ -28,6 +28,7 @@ const Tester = () => {
 
   const makeTokenizedResponse = useCallback(async() => {
     try {
+      
       const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_VERIFY, {
         method: 'POST',
         headers: new Headers({
@@ -41,6 +42,9 @@ const Tester = () => {
       debugger 
     } catch (err) {
       debugger
+      // TODO, deal with refresh logic once token expires
+      // if request fails, make a request to refresh endpoint
+      // and resave token
       console.log(err)
     }
   }, [token])
