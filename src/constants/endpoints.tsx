@@ -7,7 +7,8 @@ const PATHS = {
     LOGIN: '/login',
     AUTH: '/auth',
     AUTH_TOKEN: '/auth/token',
-    AUTH_VERIFY: '/auth/verify'
+    AUTH_VERIFY: '/auth/verify',
+    AUTH_TOKEN_REFRESH: '/auth/refresh'
   },
   BASE_URL: import.meta.env.VITE_API_URL
 }
@@ -22,7 +23,8 @@ const ENDPOINTS = {
     LOGIN: PATHS.USER.LOGIN,
     AUTH: PATHS.USER.AUTH,
     AUTH_TOKEN: PATHS.USER.AUTH_TOKEN,
-    AUTH_VERIFY: PATHS.USER.AUTH_VERIFY
+    AUTH_VERIFY: PATHS.USER.AUTH_VERIFY,
+    AUTH_TOKEN_REFRESH: PATHS.USER.AUTH_TOKEN_REFRESH
   }
 }
 

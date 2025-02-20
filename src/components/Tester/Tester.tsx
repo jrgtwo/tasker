@@ -3,22 +3,26 @@ import { ENDPOINTS } from '../../constants/endpoints';
 const Tester = () => {
 
   const [token, setToken] = useState('')
+  const [isTokenExpired, setIsTokenExpired ] = useState(false)
 
   useEffect(() => {
+    console.log('===running');
+
     (async () => {
       try {
         const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN, {
           method: 'POST',
+
           body: JSON.stringify({
-            data: { "some": "data"},
-            headers: new Headers({
-              'Accept': 'application/json',
-              'Content-type': 'application/json',
-            })
+            data: { "some": "data"}
+          }),
+          credentials: 'include',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
           })
         });
         const res = await req.json()
-        debugger
         setToken(res)
       } catch (err) {
         debugger
@@ -34,21 +38,50 @@ const Tester = () => {
         headers: new Headers({
           'Accept': 'application/json',
           'Content-type': 'application/json',
-          'authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         })
       })
 
       const res = await req.json()
+      if (res?.err) {
+        throw new Error('Token Expired')
+      }
       console.log(res)
-      debugger 
+      // debugger 
     } catch (err) {
-      debugger
-      // TODO, deal with refresh logic once token expires
-      // if request fails, make a request to refresh endpoint
-      // and resave token
+
       console.log(err)
+  
+      if (err?.message === 'Token Expired') {
+        setIsTokenExpired(true)
+      }
     }
   }, [token])
+
+  useEffect(() => {
+    if (!isTokenExpired) return 
+
+    (async () => {
+      try {
+        const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify({
+            data: { "some": "data"},
+          }),
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+          })
+        });
+        const res = await req.json()
+        setToken(res)
+        setIsTokenExpired(false)
+      } catch (err) {
+        debugger
+      }
+    })()
+  }, [isTokenExpired])
 
   return (
     <>
