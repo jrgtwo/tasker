@@ -77,7 +77,8 @@ class Storage {
     debugger
      const {err, res} = await this.fetcher.post<User>({
         path: ENDPOINTS.USER.LOGIN,
-        body: toLoginRequestBody({googleLoginData, localUserId})
+        body: toLoginRequestBody({googleLoginData, localUserId}),
+        withCredentials: true
       })
 
       return {err, res}

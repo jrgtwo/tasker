@@ -12,6 +12,7 @@ const PATHS = {
   },
   BASE_URL: import.meta.env.VITE_API_URL
 }
+console.log(PATHS.BASE_URL)
 const ENDPOINTS = {
   BASE_URL: PATHS.BASE_URL,
   TASKS: {

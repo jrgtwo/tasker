@@ -11,6 +11,7 @@ const expirationDate = () => new Date(
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
 
+  const [accessToken, setAccessToken] = useState(null)
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
@@ -23,17 +24,20 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
       const isIdValid = localUserId?.expiry && new Date(localUserId?.expiry) > new Date()
       const isUserDataValid = localUserData?.expiry && new Date(localUserData?.expiry) > new Date()
 
-      if (isIdValid && isUserDataValid) {        
+      if (isIdValid && isUserDataValid) {      
           setUserLoginData(localUserData.res)
           setLoginState(LOGIN_STATES.LOGGED_IN);
       } else {
+
         setLoginState(LOGIN_STATES.LOCAL_CHECKED)
       }
     }
   }, [loginState, localUserData, localUserId])
 
   useEffect(() => {
+
     if (loginState === LOGIN_STATES.LOCAL_CHECKED) {
+
       googleLoginInit().then((googleLoginData) => {
         if (googleLoginData) setGoogleLoginData(googleLoginData)
         setLoginState(LOGIN_STATES.GOOGLE_SIGNED_IN)
@@ -52,7 +56,8 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
         if (err || !res) {
           setLoginState(LOGIN_STATES.LOGGED_OUT)
         } else {
-          setUserLoginData(res)
+          setUserLoginData(res.loginData)
+          setAccessToken(res.accessToken)
           
           sessionStorage.setItem(
             'tasker::userId', 

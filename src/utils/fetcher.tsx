@@ -42,10 +42,10 @@ class Fetcher {
   }
 
 
-  async post<ResType>({path, cb, body}: FetcherPostArgs<ResType>) {
+  async post<ResType>({path, cb, body, withCredentials}: FetcherPostArgs<ResType>) {
     const reqBody = typeof body === 'string' ? body: JSON.stringify(body)
 
-    const output = await this.runFetch<ResType>({
+    const opts = {
       path: this.#BASE_URL + path, 
       options: {
           method: 'POST',
@@ -54,13 +54,18 @@ class Fetcher {
             'Content-type': 'application/json'
           },
           body: reqBody
-      }})
+      }}
+
+    if (withCredentials) {
+      opts.options.credentials = 'include';
+    }
+
+    const output = await this.runFetch<ResType>(opts)
     
     if (typeof cb === 'function') cb(output)
 
     return output
   }
-  
 }
 
 export { Fetcher}

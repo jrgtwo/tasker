@@ -6,7 +6,6 @@ const Tester = () => {
   const [isTokenExpired, setIsTokenExpired ] = useState(false)
 
   useEffect(() => {
-    console.log('===running');
 
     (async () => {
       try {
