@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "../constants/endpoints";
 import type {
   FetcherResponse, 
   FetcherConstructorArgs, 
@@ -7,6 +8,7 @@ import type {
 
 class Fetcher {
   #BASE_URL!: string
+  accessToken: string | null = null
 
   constructor({ BASE_URL }: FetcherConstructorArgs) {
     if (!BASE_URL) throw new Error('No Base URL incldued');
@@ -21,10 +23,37 @@ class Fetcher {
     options?: {[key:string]: unknown}
   }):Promise<FetcherResponse<ResType>> {
     try{
+      if (this.accessToken) {
+        options.headers.append('Authorization', `bearer ${this.accessToken}`)
+      }
+
       const req = await fetch(path, options)
       const res = await req.json()
+      if (res?.err) throw new Error(res.message)
+      if (res.accessToken) this.accessToken = res.accessToken
       return {res, err: null}
     } catch(err){
+      if (err.message === 'No token provided') {
+        debugger
+      } else if (err.message === 'Token Expired') {
+        const refreshed = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
+          method: 'POST',
+          credentials: 'include',
+          headers: new Headers({
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+          })
+        })
+
+        const refreshedRes = await refreshed.json()
+
+        if (refreshedRes.accessToken) this.accessToken = refreshedRes.accessToken
+        // this is working, just need a better approach
+        // once refresh is cleaned up, clean up stored user values
+        debugger
+
+      }
+      
       return {err: new Error(`error ${err}`), res: null}
     }
   }
@@ -49,10 +78,10 @@ class Fetcher {
       path: this.#BASE_URL + path, 
       options: {
           method: 'POST',
-          headers:{
+          headers: new Headers({
             'Accept': 'application/json',
             'Content-type': 'application/json'
-          },
+          }),
           body: reqBody
       }}
 
