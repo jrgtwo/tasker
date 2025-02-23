@@ -52,7 +52,6 @@ class Fetcher {
 
   handleFatalFetchErrors(err) {
     console.log(err)
-    debugger
     return {err: true, message: err}
   }
 

@@ -15,7 +15,6 @@ class Storage {
   }
 
   errorCB(err) {
-    debugger
     if (err.message === 'LOGOUT') {
       this.logout()
     }
