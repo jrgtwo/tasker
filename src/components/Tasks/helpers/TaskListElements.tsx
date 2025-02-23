@@ -6,6 +6,7 @@ const TaskListElements = ({
 }: {
    taskList: Tasks
 }) => {
+  debugger
   return (
     <ul 
       className="bg-slate-800/20 w-full py-4 px-4 mt-8 border-1 border-white/10 mx-auto flex flex-col rounded-lg gap-8 "

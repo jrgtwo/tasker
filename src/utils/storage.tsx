@@ -8,7 +8,17 @@ class Storage {
   fetcher
 
   constructor() {
-    this.fetcher = new Fetcher({ BASE_URL: ENDPOINTS.BASE_URL })
+    this.fetcher = new Fetcher({ 
+      BASE_URL: ENDPOINTS.BASE_URL,
+      errorCB: this.errorCB
+    })
+  }
+
+  errorCB(err) {
+    debugger
+    if (err.message === 'LOGOUT') {
+      this.logout()
+    }
   }
 
   async getTask({
@@ -78,6 +88,23 @@ class Storage {
       })
 
       return {err, res}
+  }
+
+  #logoutHandlers = []
+
+  onLogout(cb){
+    this.#logoutHandlers.push(cb)
+  }
+
+  logoutChange(reason) {
+    this.#logoutHandlers.forEach((cb) => {
+      return cb(reason);
+    })
+  }
+
+  async logout({reason = ' logout'} = {}) {
+    console.log('logout')
+    this.logoutChange(reason)
   }
 }
 

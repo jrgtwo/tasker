@@ -21,4 +21,10 @@ const openGoogleLoginPrompt = () => {
   google?.accounts.id.prompt();
 }
 
-export { googleLoginInit, openGoogleLoginPrompt }
+const googleLogout = () => {
+
+  google?.accounts.id.disableAutoSelect();
+  openGoogleLoginPrompt()
+}
+
+export { googleLoginInit, openGoogleLoginPrompt, googleLogout }

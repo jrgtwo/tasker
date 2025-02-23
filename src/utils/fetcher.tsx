@@ -9,10 +9,13 @@ import type {
 class Fetcher {
   #BASE_URL!: string
   accessToken: string | null = null
+  errorCB
 
-  constructor({ BASE_URL }: FetcherConstructorArgs) {
+  constructor({ BASE_URL, errorCB }: FetcherConstructorArgs) {
     if (!BASE_URL) throw new Error('No Base URL incldued');
-
+    if (errorCB && typeof errorCB === 'function') {
+      this.errorCB = errorCB
+    }
     this.#BASE_URL = BASE_URL
   }
 
@@ -35,31 +38,61 @@ class Fetcher {
     return this.runFetch({path, options})
   }
 
+  setAccessToken(accessToken:string) {
+    this.accessToken = accessToken
+  }
+
+  async handleFetchErrors({path, options, err}) {
+    if (err.message === 'No token provided') {
+      return {err: true, message: 'LOGOUT'}
+    } else if (err.message === 'Token Expired') {
+      return await this.checkRefreshAndRetry({path, options});        
+    }
+  }
+
+  handleFatalFetchErrors(err) {
+    console.log(err)
+    debugger
+    return {err: true, message: err}
+  }
+
+  async tryFetch(path, options) {
+    try {
+      const req = await fetch(path, options)
+      const res = await req.json()
+
+      if (res.accessToken) this.setAccessToken(res.accessToken)
+
+      if (res.err) {
+        return await this.handleFetchErrors({path, options, err: res})
+      }
+
+      return res
+    } catch(error) {
+      return this.handleFatalFetchErrors({ err: error})
+    }
+
+  } 
+
   async runFetch<ResType>({
     path, options = {}
   }: {
     path: string, 
     options?: {[key:string]: unknown}
   }):Promise<FetcherResponse<ResType>> {
-    try{
+
       if (this.accessToken) {
         options.headers.set('Authorization', `bearer ${this.accessToken}`)
       }
 
-      const req = await fetch(path, options)
-      const res = await req.json()
-      if (res?.err) throw new Error(res.message)
-      if (res.accessToken) this.accessToken = res.accessToken
-      return {res, err: null}
-    } catch(err){
-      if (err.message === 'No token provided') {
-        debugger
-      } else if (err.message === 'Token Expired') {
-        return await this.checkRefreshAndRetry({path, options});        
+      const fetchData = await this.tryFetch(path, options)
+
+      if (fetchData?.err) {
+        this?.errorCB(fetchData?.err)
+        return {err: 'some error', res: null}
       }
-      
-      return {err: new Error(`error ${err}`), res: null}
-    }
+ 
+      return {res: fetchData, err: null}
   }
 
   async get<ResType>({

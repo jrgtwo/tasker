@@ -13,11 +13,11 @@ const useGetAllTasks = () => {
     if (isLoggedIn && userLoginData?.userId) {
       (async () => {
         const {err, res} = await StorageSingleton.getAllTasks({userId: userLoginData.userId})
-
         if (err || !res) {
           setError({err: ' error'})
         } else {
-          setTaskList(res)
+
+          setTaskList(res?.res || res)
         }
       })()
     }
