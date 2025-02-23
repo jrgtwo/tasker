@@ -16,13 +16,9 @@ const googleLoginInit = () => {
   })
 }
 
-const openGoogleLoginPrompt = () => {
-  console.log('open-prompt')
-  google?.accounts.id.prompt();
-}
+const openGoogleLoginPrompt = () => google?.accounts.id.prompt()
 
 const googleLogout = () => {
-
   google?.accounts.id.disableAutoSelect();
   openGoogleLoginPrompt()
 }

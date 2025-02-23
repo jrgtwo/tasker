@@ -102,7 +102,6 @@ class Storage {
   }
 
   async logout({reason = ' logout'} = {}) {
-    console.log('logout')
     this.logoutChange(reason)
   }
 }
