@@ -16,6 +16,25 @@ class Fetcher {
     this.#BASE_URL = BASE_URL
   }
 
+  async checkRefreshAndRetry({path, options}) {
+    const refreshed = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
+      method: 'POST',
+      credentials: 'include',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      })
+    })
+    
+    const refreshedRes = await refreshed.json()
+
+    if (!refreshedRes.accessToken) return {err: true, message: 'Refresh Token Failure'}
+
+    this.accessToken = refreshedRes.accessToken
+
+    return this.runFetch({path, options})
+  }
+
   async runFetch<ResType>({
     path, options = {}
   }: {
@@ -24,7 +43,7 @@ class Fetcher {
   }):Promise<FetcherResponse<ResType>> {
     try{
       if (this.accessToken) {
-        options.headers.append('Authorization', `bearer ${this.accessToken}`)
+        options.headers.set('Authorization', `bearer ${this.accessToken}`)
       }
 
       const req = await fetch(path, options)
@@ -36,22 +55,7 @@ class Fetcher {
       if (err.message === 'No token provided') {
         debugger
       } else if (err.message === 'Token Expired') {
-        const refreshed = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
-          method: 'POST',
-          credentials: 'include',
-          headers: new Headers({
-            'Accept': 'application/json',
-            'Content-type': 'application/json',
-          })
-        })
-
-        const refreshedRes = await refreshed.json()
-
-        if (refreshedRes.accessToken) this.accessToken = refreshedRes.accessToken
-        // this is working, just need a better approach
-        // once refresh is cleaned up, clean up stored user values
-        debugger
-
+        return await this.checkRefreshAndRetry({path, options});        
       }
       
       return {err: new Error(`error ${err}`), res: null}

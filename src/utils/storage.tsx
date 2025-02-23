@@ -67,15 +67,13 @@ class Storage {
   }
 
   async login({ 
-    googleLoginData, 
-    localUserId
+    googleLoginData
   }: {
-    googleLoginData: GoogleLoginData | null,
-    localUserId: string | null
+    googleLoginData: GoogleLoginData | null
   }) {
      const {err, res} = await this.fetcher.post<User>({
         path: ENDPOINTS.USER.LOGIN,
-        body: toLoginRequestBody({googleLoginData, localUserId}),
+        body: toLoginRequestBody({googleLoginData}),
         withCredentials: true
       })
 
