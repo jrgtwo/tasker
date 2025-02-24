@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import type {Task, TaskError } from '../Types';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage';
+import { StorageSingleton } from '../../../utils/storage/storage';
 
 const useGetTask = (id:Task["id"] | undefined) => {
   const {isLoggedIn, userLoginData} = useContext(UserLoginContext);

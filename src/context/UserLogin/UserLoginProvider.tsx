@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { UserLoginContext } from "./UserLoginContext";
 import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, googleLogout, openGoogleLoginPrompt } from './../../vendor/google/google'
-import { StorageSingleton } from '../../utils/storage';
+import { StorageSingleton } from '../../utils/storage/storage';
 import { LOGIN_STATES } from './constants';
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
@@ -13,7 +13,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     window.Storetest = StorageSingleton
-    StorageSingleton.onLogout(() => {
+    StorageSingleton.on('LOGOUT', () => {
       setLoginState(LOGIN_STATES.LOGGED_OUT)
       setIsLoggedIn(false)
       setGoogleLoginData(null)

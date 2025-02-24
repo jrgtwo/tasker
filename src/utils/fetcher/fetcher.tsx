@@ -1,25 +1,36 @@
-import { ENDPOINTS } from "../constants/endpoints";
+import { ENDPOINTS } from "../../constants/endpoints";
 import type {
   FetcherResponse, 
   FetcherConstructorArgs, 
   FetcherGetArgs,
-  FetcherPostArgs
+  FetcherPostArgs,
+  FetcherRequestOptions
 } from "./FetcherTypes";
 
 class Fetcher {
   #BASE_URL!: string
   accessToken: string | null = null
-  errorCB
+  eventHandler
+  errorEventHandler
 
-  constructor({ BASE_URL, errorCB }: FetcherConstructorArgs) {
+  constructor({ BASE_URL, eventHandler, errorEventHandler }: FetcherConstructorArgs) {
     if (!BASE_URL) throw new Error('No Base URL incldued');
-    if (errorCB && typeof errorCB === 'function') {
-      this.errorCB = errorCB
+    if (eventHandler && typeof eventHandler === 'function') {
+      this.eventHandler = eventHandler
+    }
+    if (errorEventHandler && typeof errorEventHandler === 'function') {
+      this.errorEventHandler = errorEventHandler
     }
     this.#BASE_URL = BASE_URL
   }
 
-  async checkRefreshAndRetry({path, options}) {
+  async checkRefreshAndRetry({
+    path, 
+    options
+  }: {
+    path: string,
+    options: FetcherRequestOptions
+  }) {
     const refreshed = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
       method: 'POST',
       credentials: 'include',
@@ -42,20 +53,31 @@ class Fetcher {
     this.accessToken = accessToken
   }
 
-  async handleFetchErrors({path, options, err}) {
+  async handleFetchErrors({
+    path, options, err
+  }: {
+    path: string,
+    options: FetcherRequestOptions,
+    err: { message: string }
+  }) {
     if (err.message === 'No token provided') {
-      return {err: true, message: 'LOGOUT'}
+      return {err: true, name: 'LOGOUT', message: 'LOGOUT'}
     } else if (err.message === 'Token Expired') {
       return await this.checkRefreshAndRetry({path, options});        
     }
   }
 
-  handleFatalFetchErrors(err) {
+  handleFatalFetchErrors(err: string) {
     console.log(err)
     return {err: true, message: err}
   }
 
-  async tryFetch(path, options) {
+  async tryFetch({
+    path, options
+  }: {
+    path: string,
+    options: Pick<RequestInit, keyof FetcherRequestOptions>
+  }) {
     try {
       const req = await fetch(path, options)
       const res = await req.json()
@@ -68,26 +90,26 @@ class Fetcher {
 
       return res
     } catch(error) {
-      return this.handleFatalFetchErrors({ err: error})
+      const err = `${error}`
+      return this.handleFatalFetchErrors(err)
     }
-
   } 
 
   async runFetch<ResType>({
     path, options = {}
   }: {
     path: string, 
-    options?: {[key:string]: unknown}
+    options?: {headers?: Headers}
   }):Promise<FetcherResponse<ResType>> {
 
       if (this.accessToken) {
-        options.headers.set('Authorization', `bearer ${this.accessToken}`)
+        options?.headers?.set('Authorization', `bearer ${this.accessToken}`)
       }
 
-      const fetchData = await this.tryFetch(path, options)
+      const fetchData = await this.tryFetch({path, options})
 
       if (fetchData?.err) {
-        this?.errorCB(fetchData?.err)
+        this?.errorEventHandler?.(fetchData?.err)
         return {err: 'some error', res: null}
       }
  
@@ -110,7 +132,10 @@ class Fetcher {
   async post<ResType>({path, cb, body, withCredentials}: FetcherPostArgs<ResType>) {
     const reqBody = typeof body === 'string' ? body: JSON.stringify(body)
 
-    const opts = {
+    const opts: {
+      path: string,
+      options: FetcherRequestOptions
+    } = {
       path: this.#BASE_URL + path, 
       options: {
           method: 'POST',

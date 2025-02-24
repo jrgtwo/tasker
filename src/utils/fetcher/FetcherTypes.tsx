@@ -1,7 +1,9 @@
 export type FetcherResponse<T> = {err: Error | string| null, res: T | null}
 
 export type FetcherConstructorArgs = {
-  BASE_URL: string
+  BASE_URL: string,
+  eventHandler: (event: {[key:string]: unknown}) => unknown
+  errorEventHandler: (event: {[key:string]: unknown}) => unknown
 }
 
 export type FetcherGetArgs<T> = {
@@ -14,4 +16,12 @@ export type FetcherPostArgs<T> = {
   cb?: (responseData: FetcherResponse<T>) => unknown
   body: {[key:string]: unknown} | string
   headers?: {[key:string]: string}
+  withCredentials?: boolean
+}
+
+export type FetcherRequestOptions = {
+    method: string,
+    headers: Headers,
+    body: unknown,
+    credentials?: string
 }

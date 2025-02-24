@@ -1,9 +1,9 @@
 import { type ChangeEvent, type MouseEvent, useState, useContext } from 'react';
-import type { FetcherResponse } from '../../../utils/FetcherTypes';
+import type { FetcherResponse } from '../../../utils/fetcher/FetcherTypes';
 import type { Task } from './../Types';
 import { SubmissionState } from '../constants/submissionStates';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage';
+import { StorageSingleton } from '../../../utils/storage/storage';
 
 const usePostNewTaskForm = () => {
   

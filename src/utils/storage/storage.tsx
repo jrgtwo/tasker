@@ -1,8 +1,8 @@
-import type { Tasks, Task } from "../components/Tasks/Types"
-import type { GoogleLoginData, User } from "../components/User/Types"
-import { ENDPOINTS } from "../constants/endpoints"
-import { Fetcher } from "./fetcher"
-import { toLoginRequestBody } from "../context/UserLogin/utils"
+import type { Tasks, Task } from "../../components/Tasks/Types"
+import type { GoogleLoginData, User } from "../../components/User/Types"
+import { ENDPOINTS } from "../../constants/endpoints"
+import { Fetcher } from "../fetcher/fetcher"
+import { toLoginRequestBody } from "../../context/UserLogin/utils"
 
 class Storage {
   fetcher
@@ -10,14 +10,16 @@ class Storage {
   constructor() {
     this.fetcher = new Fetcher({ 
       BASE_URL: ENDPOINTS.BASE_URL,
-      errorCB: this.errorCB
+      eventHandler: this.fetcherEventHandler,
+      errorEventHandler: this.fetcherEventHandler
     })
   }
 
-  errorCB(err) {
-    if (err.message === 'LOGOUT') {
-      this.logout()
-    }
+  fetcherEventHandler(event) {
+    this.onChange({name: event.name,  message: event.message}, event)
+    // if (event.message === 'LOGOUT') {
+    //   this.logout()
+    // }
   }
 
   async getTask({
@@ -89,20 +91,26 @@ class Storage {
       return {err, res}
   }
 
-  #logoutHandlers = []
+  #onHandlers = new Map()
 
-  onLogout(cb){
-    this.#logoutHandlers.push(cb)
+  on(name, cb){
+    const currHandlersExist = this.#onHandlers.has(name)
+    if (!currHandlersExist) {
+      this.#onHandlers.set(name,[cb])
+      return
+    }
+      this.#onHandlers.set(name, [...this.#onHandlers.get(name), cb])
   }
 
-  logoutChange(reason) {
-    this.#logoutHandlers.forEach((cb) => {
-      return cb(reason);
+  onChange(name, data) {
+    if (!this.#onHandlers.has(name)) return;
+    this.#onHandlers.get(name).forEach((cb) => {
+      return cb(data);
     })
   }
 
   async logout({reason = ' logout'} = {}) {
-    this.logoutChange(reason)
+    this.onChange('LOGOUT', reason)
   }
 }
 

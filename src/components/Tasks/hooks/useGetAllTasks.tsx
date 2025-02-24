@@ -2,7 +2,7 @@ import type {Tasks, TaskError } from '../Types'
 
 import { useEffect, useState, useContext } from 'react';
 import { UserLoginContext } from '../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage';
+import { StorageSingleton } from '../../../utils/storage/storage';
 
 const useGetAllTasks = () => {
   const { isLoggedIn, userLoginData } = useContext(UserLoginContext);
