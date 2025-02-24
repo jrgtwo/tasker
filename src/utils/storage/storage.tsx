@@ -3,6 +3,7 @@ import type { GoogleLoginData, User } from "../../components/User/Types"
 import { ENDPOINTS } from "../../constants/endpoints"
 import { Fetcher } from "../fetcher/fetcher"
 import { toLoginRequestBody } from "../../context/UserLogin/utils"
+import { EventPayload } from "../fetcher/FetcherTypes"
 
 class Storage {
   fetcher
@@ -15,10 +16,7 @@ class Storage {
     })
   }
 
-  fetcherEventHandler(event: {
-    name: string,
-    message: string
-  }) {
+  fetcherEventHandler(event: EventPayload) {
     this.onChange({name: event.name,  data: event}, )
   }
 

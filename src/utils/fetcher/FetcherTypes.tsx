@@ -1,9 +1,13 @@
 export type FetcherResponse<T> = {err: Error | string| null, res: T | null}
 
+export type EventPayload = {
+  name: string,
+  message?: string,
+}
 export type FetcherConstructorArgs = {
   BASE_URL: string,
-  eventHandler: (event: {[key:string]: unknown}) => unknown
-  errorEventHandler: (event: {[key:string]: unknown}) => unknown
+  eventHandler: (event: EventPayload) => void
+  errorEventHandler: (event: EventPayload) => void
 }
 
 export type FetcherGetArgs<T> = {
