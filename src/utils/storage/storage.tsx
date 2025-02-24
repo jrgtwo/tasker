@@ -15,11 +15,11 @@ class Storage {
     })
   }
 
-  fetcherEventHandler(event) {
-    this.onChange({name: event.name,  message: event.message}, event)
-    // if (event.message === 'LOGOUT') {
-    //   this.logout()
-    // }
+  fetcherEventHandler(event: {
+    name: string,
+    message: string
+  }) {
+    this.onChange({name: event.name,  data: event}, )
   }
 
   async getTask({
@@ -91,26 +91,29 @@ class Storage {
       return {err, res}
   }
 
-  #onHandlers = new Map()
+  #onHandlers: Map<string, unknown[]> = new Map()
 
-  on(name, cb){
+  on(name: string, cb: (data: unknown) => void){
     const currHandlersExist = this.#onHandlers.has(name)
     if (!currHandlersExist) {
       this.#onHandlers.set(name,[cb])
       return
     }
-      this.#onHandlers.set(name, [...this.#onHandlers.get(name), cb])
+    const current = this.#onHandlers.get(name) ?? []
+      this.#onHandlers.set(name, [...current, cb])
   }
 
-  onChange(name, data) {
+  onChange({
+    name, 
+    data
+  }: {
+    name: string,
+    data: {[key: string]: unknown}
+  }) {
     if (!this.#onHandlers.has(name)) return;
-    this.#onHandlers.get(name).forEach((cb) => {
-      return cb(data);
-    })
-  }
-
-  async logout({reason = ' logout'} = {}) {
-    this.onChange('LOGOUT', reason)
+    this.#onHandlers.get(name)?.forEach((cb) => (
+      typeof cb === 'function' && cb(data)
+    ))
   }
 }
 
