@@ -27,7 +27,7 @@ const Task = () => {
                 <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
                 <h4 className="font-extralight text-sm text-white/80">Created On: {new Date(task.date).toLocaleDateString()}</h4>
                 {task.due_date && (
-                    <h4 className="font-extralight text-sm text-white/80">Due Date: {`${new Date(task.due_date).toLocaleDateString()}`}</h4>
+                  <h4 className="font-extralight text-sm text-white/80">Due Date: {`${new Date(task.due_date).toLocaleDateString()}`}</h4>
                 )}
                 <p className="bg-white/5 px-6 py-10 rounded-lg mt-4">
                   {task.description}
