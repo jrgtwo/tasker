@@ -2,7 +2,7 @@ import type {Tasks, TaskError } from '../Types'
 
 import { useEffect, useState, useContext } from 'react';
 import { UserLoginContext } from '../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage/storage';
+import { DataStoreSingleton } from '../../../utils/dataStore/dataStore';
 
 const useGetAllTasks = () => {
   const { isLoggedIn, userLoginData } = useContext(UserLoginContext);
@@ -12,7 +12,7 @@ const useGetAllTasks = () => {
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId) {
       (async () => {
-        const {err, res} = await StorageSingleton.getAllTasks({userId: userLoginData.userId})
+        const {err, res} = await DataStoreSingleton.getAllTasks({userId: userLoginData.userId})
         if (err || !res) {
           setError({err: ' error'})
         } else {

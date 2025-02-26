@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { UserLoginContext } from "./UserLoginContext";
 import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, googleLogout, openGoogleLoginPrompt } from './../../vendor/google/google'
-import { StorageSingleton } from '../../utils/storage/storage';
+import { DataStoreSingleton } from '../../utils/dataStore/dataStore';
 import { LOGIN_STATES } from './constants';
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
@@ -12,8 +12,8 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
   const [userLoginData, setUserLoginData] = useState<User | null>(null);
 
   useEffect(() => {
-    window.Storetest = StorageSingleton
-    StorageSingleton.on('LOGOUT', () => {
+    window.Storetest = DataStoreSingleton
+    DataStoreSingleton.on('LOGOUT', () => {
       setLoginState(LOGIN_STATES.LOGGED_OUT)
       setIsLoggedIn(false)
       setGoogleLoginData(null)
@@ -37,7 +37,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
     if (loginState === LOGIN_STATES.GOOGLE_SIGNED_IN) {
 
       (async () => {
-        const { err, res } = await StorageSingleton.login({googleLoginData})
+        const { err, res } = await DataStoreSingleton.login({googleLoginData})
         
         if (err || !res) {
           setLoginState(LOGIN_STATES.LOGGED_OUT)

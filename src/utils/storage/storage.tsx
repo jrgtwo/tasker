@@ -1,119 +1,66 @@
-import type { Tasks, Task } from "../../components/Tasks/Types"
-import type { GoogleLoginData, User } from "../../components/User/Types"
-import { ENDPOINTS } from "../../constants/endpoints"
-import { Fetcher } from "../fetcher/fetcher"
-import { toLoginRequestBody } from "../../context/UserLogin/utils"
-import { EventPayload } from "../fetcher/FetcherTypes"
-
 class Storage {
-  fetcher
-
+  #storage = new Map()
+  #splitKeys = []
   constructor() {
-    this.fetcher = new Fetcher({ 
-      BASE_URL: ENDPOINTS.BASE_URL,
-      eventHandler: this.fetcherEventHandler,
-      errorEventHandler: this.fetcherEventHandler
-    })
+   
   }
 
-  fetcherEventHandler(event: EventPayload) {
-    this.onChange({name: event.name,  data: event}, )
-  }
-
-  async getTask({
-    userId, taskId
-  }: {
-    userId: string, taskId: string|number
-  }) {
-    const {err, res} = await this.fetcher.post<Task>({
-      path: ENDPOINTS.TASKS.GET_BY_ID(taskId),
-      body: {
-        userId
-      } 
-    })
-
-    return {err, res}
-  }
-
- async postNewTask({
-  title, desc, userId, dueDate
- }: {
-  title: string| null, desc: string | null, userId: string | null , dueDate:string | null
- }) {
-
-    if (!title || !desc || !userId) return {
-      err: 'missing fields',
-      res: null
-    }
-
-    const {err, res} = await this.fetcher.post({
-      path: ENDPOINTS.TASKS.NEW, 
-      body: {
-        title, 
-        desc, 
-        userId,
-        dueDate,
+  setData<InputType>(name: string, data:InputType, separateBy?: string|undefined, silentInsert = false) {
+    debugger
+    if (!!separateBy && Array.isArray(data)) {
+      this.#storage.set(name, new Map())
+      const tryUpdate = this.splitData(name, data, separateBy)  
+      if (tryUpdate) {
+        return Array.from(this.#storage.get(name), (_, val) => val)
+      } else {
+        return false
       }
-    })
-
-    return {err, res}
-  }
-
-  async getAllTasks({
-    userId
-  }: {
-    userId:string
-  }) {
+    } 
     
-    const {err, res} = await this.fetcher.post<Tasks>({
-      path: ENDPOINTS.TASKS.GET_ALL, 
-      body: {
-        userId
-      }
-    })
-
-    return {err, res}
+    return this.#storage.set(name, data);
+  }
+  hasDataBy(name: string, key: string) {
+    return this.#storage.get(name).has(key)
   }
 
-  async login({ 
-    googleLoginData
-  }: {
-    googleLoginData: GoogleLoginData | null
-  }) {
-     const {err, res} = await this.fetcher.post<User>({
-        path: ENDPOINTS.USER.LOGIN,
-        body: toLoginRequestBody({googleLoginData}),
-        withCredentials: true
-      })
-
-      return {err, res}
+  getDataBy(name: string, key: string) {
+    return this.#storage.get(name).get(key)
   }
 
-  #onHandlers: Map<string, unknown[]> = new Map()
-
-  on(name: string, cb: (data: unknown) => void){
-    const currHandlersExist = this.#onHandlers.has(name)
-    if (!currHandlersExist) {
-      this.#onHandlers.set(name,[cb])
-      return
+  getData(name: string) {
+    if (this.#splitKeys.includes(name)) {
+      debugger
+      return Array.from(this.#storage.get(name), (_, val) => val)
     }
-    const current = this.#onHandlers.get(name) ?? []
-      this.#onHandlers.set(name, [...current, cb])
+    return this.#storage.get(name)
   }
 
-  onChange({
-    name, 
-    data
-  }: {
-    name: string,
-    data: {[key: string]: unknown}
-  }) {
-    if (!this.#onHandlers.has(name)) return;
-    this.#onHandlers.get(name)?.forEach((cb) => (
-      typeof cb === 'function' && cb(data)
-    ))
+  hasData(name: string) {
+    return this.#storage.has(name)
+  }
+
+  splitData(name: string, data, key: string) {
+    const errors = []
+    if (!this.#splitKeys.includes(name)) this.#splitKeys.push(name);
+
+    if (!key) return false
+  
+    const dataMap = this.#storage.get(name)
+    if (!dataMap) return false
+
+    data.forEach((elem, index: number) => {
+      if (!elem) {
+        errors.push(`Missing Elem @ ${index}`);
+        return
+      }
+      if (!elem[key]) {
+        errors.push(`Missing Key Value @ ${index}`)
+      }
+      
+      dataMap.set(elem[key], elem)
+    })
+    return true
   }
 }
 
-const StorageSingleton = new Storage()
-export { StorageSingleton }
+export { Storage }

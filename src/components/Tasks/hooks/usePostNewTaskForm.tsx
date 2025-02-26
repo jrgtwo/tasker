@@ -3,7 +3,7 @@ import type { FetcherResponse } from '../../../utils/fetcher/FetcherTypes';
 import type { Task } from './../Types';
 import { SubmissionState } from '../constants/submissionStates';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage/storage';
+import { DataStoreSingleton } from '../../../utils/dataStore/dataStore';
 
 const usePostNewTaskForm = () => {
   
@@ -36,7 +36,7 @@ const usePostNewTaskForm = () => {
 
     if (!userLoginData) return setSubmissionError(new Error('no user id'))
 
-    const {err, res} = await StorageSingleton.postNewTask({
+    const {err, res} = await DataStoreSingleton.postNewTask({
       title, desc, userId: userLoginData.userId, dueDate
     })
     if (err || !res) {

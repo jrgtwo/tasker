@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import type {Task, TaskError } from '../Types';
 import { UserLoginContext } from './../../../context/UserLogin/UserLoginContext'
-import { StorageSingleton } from '../../../utils/storage/storage';
+import { DataStoreSingleton } from '../../../utils/dataStore/dataStore';
 
 const useGetTask = (id:Task["id"] | undefined) => {
   const {isLoggedIn, userLoginData} = useContext(UserLoginContext);
@@ -11,7 +11,7 @@ const useGetTask = (id:Task["id"] | undefined) => {
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId && id) {
       (async () => {
-        const {err, res} = await StorageSingleton.getTask({
+        const {err, res} = await DataStoreSingleton.getTask({
           taskId: id, userId: userLoginData.userId
         });
 
