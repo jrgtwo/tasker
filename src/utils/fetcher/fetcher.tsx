@@ -24,6 +24,24 @@ class Fetcher {
     this.#BASE_URL = BASE_URL
   }
 
+  async checkRefresh() {
+    try {
+      const req = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
+        method: 'POST',
+        credentials: 'include',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+        })
+      })
+
+      const res = await req.json()
+      return {err: null, res}
+    } catch (err) {
+      return {err, res: null}
+    }
+  }
+
   async checkRefreshAndRetry({
     path, 
     options
@@ -31,20 +49,11 @@ class Fetcher {
     path: string,
     options: FetcherRequestOptions
   }) {
-    const refreshed = await fetch(ENDPOINTS.BASE_URL + ENDPOINTS.USER.AUTH_TOKEN_REFRESH, {
-      method: 'POST',
-      credentials: 'include',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-type': 'application/json',
-      })
-    })
-    
-    const refreshedRes = await refreshed.json()
+    const {err, res} = await this.checkRefresh()
 
-    if (!refreshedRes.accessToken) return {err: true, message: 'Refresh Token Failure'}
+    if (!res.accessToken) return {err: true, message: 'Refresh Token Failure'}
 
-    this.accessToken = refreshedRes.accessToken
+    this.accessToken = res.accessToken
 
     return this.runFetch({path, options})
   }

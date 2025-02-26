@@ -4,12 +4,15 @@ import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, googleLogout, openGoogleLoginPrompt } from './../../vendor/google/google'
 import { DataStoreSingleton } from '../../utils/dataStore/dataStore';
 import { LOGIN_STATES } from './constants';
+import { datastore } from 'googleapis/build/src/apis/datastore';
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
+  const [localUser, setLocalUser] = useState(null)
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
   const [userLoginData, setUserLoginData] = useState<User | null>(null);
+
 
   useEffect(() => {
     window.Storetest = DataStoreSingleton
@@ -21,10 +24,58 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
       googleLogout()
     })
   }, [])
-  
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.INITIALIZE) {
+      let possibleLocalUser = sessionStorage.getItem('userState')
+      if (!possibleLocalUser) {
+        setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
+        return
+      }
+
+      try {
+        possibleLocalUser = JSON.parse(possibleLocalUser)
+      } catch(err) {
+        setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
+        return
+      }
+
+      if (new Date(possibleLocalUser?.expiry) < new Date()) {
+        setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
+      } {
+        setLoginState(LOGIN_STATES.CHECK_CAN_LOGIN)
+      }
+    }
+  }, [loginState])
+
+
+  useEffect(() => {
+    if (loginState === LOGIN_STATES.CHECK_CAN_LOGIN) {
+      // try to hit the refresh endpoint to login
+      (async() => {
+        const {err, res} = await DataStoreSingleton.refreshLogin()
+
+        if (err) {
+          setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
+          return
+        }
+
+        setUserLoginData(res.loginData)
+ 
+        setLoginState(LOGIN_STATES.LOGGED_IN)
+
+        const expiry = Date.now() +  1000 * 60 * 60 * 24 * 7
+        localStorage.setItem('userState', JSON.stringify({
+          userId: res.loginData.userId,
+          expiry
+        }))
+
+      })()
+    }
+  }, [loginState])
+
+  useEffect(() => {
+    if (loginState === LOGIN_STATES.GOOGLE_OPEN_PROMPT) {
       googleLoginInit().then((googleLoginData) => {
         if (googleLoginData) setGoogleLoginData(googleLoginData)
         setLoginState(LOGIN_STATES.GOOGLE_SIGNED_IN)
@@ -45,6 +96,10 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
           setUserLoginData(res.loginData)
  
           setLoginState(LOGIN_STATES.LOGGED_IN)
+          const expiry = Date.now() +  1000 * 60 * 60 * 24 * 7
+          localStorage.setItem('userState', JSON.stringify({
+            expiry
+          }))
         }
       })()
     }

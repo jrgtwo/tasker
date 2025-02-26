@@ -11,7 +11,7 @@ class Storage {
       this.#storage.set(name, new Map())
       const tryUpdate = this.splitData(name, data, separateBy)  
       if (tryUpdate) {
-        return Array.from(this.#storage.get(name), (_, val) => val)
+        return Array.from(this.#storage.get(name), ([, val]) => val)
       } else {
         return false
       }
@@ -20,10 +20,12 @@ class Storage {
     return this.#storage.set(name, data);
   }
   hasDataBy(name: string, key: string) {
+    debugger
     return this.#storage.get(name).has(key)
   }
 
   getDataBy(name: string, key: string) {
+    debugger
     return this.#storage.get(name).get(key)
   }
 
