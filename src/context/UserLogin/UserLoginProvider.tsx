@@ -7,7 +7,7 @@ import { LOGIN_STATES } from './constants';
 import { datastore } from 'googleapis/build/src/apis/datastore';
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
-  const [localUser, setLocalUser] = useState(null)
+  //const [localUser, setLocalUser] = useState(null)
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
@@ -27,8 +27,10 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
   useEffect(() => {
     if (loginState === LOGIN_STATES.INITIALIZE) {
-      let possibleLocalUser = sessionStorage.getItem('userState')
+
+      let possibleLocalUser = localStorage.getItem('userState')
       if (!possibleLocalUser) {
+
         setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
         return
       }
@@ -54,19 +56,18 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
       // try to hit the refresh endpoint to login
       (async() => {
         const {err, res} = await DataStoreSingleton.refreshLogin()
-
         if (err) {
           setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
           return
         }
 
-        setUserLoginData(res.loginData)
+        setUserLoginData(res)
  
         setLoginState(LOGIN_STATES.LOGGED_IN)
 
         const expiry = Date.now() +  1000 * 60 * 60 * 24 * 7
         localStorage.setItem('userState', JSON.stringify({
-          userId: res.loginData.userId,
+          userId: res.userId,
           expiry
         }))
 
@@ -89,12 +90,12 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
       (async () => {
         const { err, res } = await DataStoreSingleton.login({googleLoginData})
-        
+
         if (err || !res) {
           setLoginState(LOGIN_STATES.LOGGED_OUT)
         } else {
           setUserLoginData(res.loginData)
- 
+
           setLoginState(LOGIN_STATES.LOGGED_IN)
           const expiry = Date.now() +  1000 * 60 * 60 * 24 * 7
           localStorage.setItem('userState', JSON.stringify({

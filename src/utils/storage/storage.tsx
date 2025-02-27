@@ -6,7 +6,7 @@ class Storage {
   }
 
   setData<InputType>(name: string, data:InputType, separateBy?: string|undefined, silentInsert = false) {
-    debugger
+  
     if (!!separateBy && Array.isArray(data)) {
       this.#storage.set(name, new Map())
       const tryUpdate = this.splitData(name, data, separateBy)  
@@ -20,19 +20,19 @@ class Storage {
     return this.#storage.set(name, data);
   }
   hasDataBy(name: string, key: string) {
-    debugger
+  
     return this.#storage.get(name).has(key)
   }
 
   getDataBy(name: string, key: string) {
-    debugger
+
     return this.#storage.get(name).get(key)
   }
 
   getData(name: string) {
     if (this.#splitKeys.includes(name)) {
-      debugger
-      return Array.from(this.#storage.get(name), (_, val) => val)
+
+      return Array.from(this.#storage.get(name), ([_, val]) => val)
     }
     return this.#storage.get(name)
   }
@@ -59,7 +59,7 @@ class Storage {
         errors.push(`Missing Key Value @ ${index}`)
       }
       
-      dataMap.set(elem[key], elem)
+      dataMap.set(`${elem[key]}`, elem)
     })
     return true
   }

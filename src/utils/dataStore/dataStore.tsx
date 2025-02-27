@@ -32,21 +32,21 @@ class DataStore {
   }: {
     userId: string, taskId: Task['id']
   }) {
-    debugger
+
     const storageName = StorageDataNames.TASK
 
     if (this.#storage.hasDataBy(storageName, taskId)) {
-      debugger
+
       return {res: this.#storage.getDataBy(storageName, taskId), err: null}
     }
-    debugger
+
     const {err, res} = await this.#fetcher.post<Task>({
       path: ENDPOINTS.TASKS.GET_BY_ID(taskId),
       body: {
         userId
       } 
     })
-    debugger
+
     this.#storage.setData(storageName, {err, res})
   
     return {err, res}
@@ -83,7 +83,7 @@ class DataStore {
   }) {
     
     if (this.#storage.hasData(StorageDataNames.TASKS)) {
-      debugger
+
       return {res: this.#storage.getData(StorageDataNames.TASKS), err: null}
     }
 
@@ -98,15 +98,15 @@ class DataStore {
       // do some error stuff here
       return err
     }
-    debugger
+
     this.#storage.setData<Tasks>(StorageDataNames.TASKS, res, 'id')
     return {err, res}
   }
 
   async refreshLogin() {
     const {err, res} = await this.#fetcher.checkRefresh()
-    debugger
-    return {err, res}
+
+    return {err, res: res?.loginData?.user}
   }
 
   async login({ 

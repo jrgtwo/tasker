@@ -36,6 +36,7 @@ class Fetcher {
       })
 
       const res = await req.json()
+      if (res.accessToken) this.setAccessToken(res.accessToken)
       return {err: null, res}
     } catch (err) {
       return {err, res: null}
@@ -50,7 +51,7 @@ class Fetcher {
     options: FetcherRequestOptions
   }) {
     const {err, res} = await this.checkRefresh()
-
+    // TODO: handle possible exceptions
     if (!res.accessToken) return {err: true, message: 'Refresh Token Failure'}
 
     this.accessToken = res.accessToken
