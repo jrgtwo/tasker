@@ -106,7 +106,7 @@ class DataStore {
   async refreshLogin() {
     const {err, res} = await this.#fetcher.checkRefresh()
 
-    return {err, res: res?.loginData?.user}
+    return {err, res: res?.loginData}
   }
 
   async login({ 
