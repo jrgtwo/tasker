@@ -4,10 +4,8 @@ import type { GoogleLoginData, User } from './../../components/User/Types'
 import { googleLoginInit, googleLogout, openGoogleLoginPrompt } from './../../vendor/google/google'
 import { DataStoreSingleton } from '../../utils/dataStore/dataStore';
 import { LOGIN_STATES } from './constants';
-import { datastore } from 'googleapis/build/src/apis/datastore';
 
 function UserLoginProvider({ children }: { children: ReactNode}) {
-  //const [localUser, setLocalUser] = useState(null)
   const [loginState, setLoginState] = useState<LOGIN_STATES>(LOGIN_STATES.INITIALIZE)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [googleLoginData, setGoogleLoginData] = useState<GoogleLoginData | null>(null)
@@ -15,7 +13,6 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
 
 
   useEffect(() => {
-    window.Storetest = DataStoreSingleton
     DataStoreSingleton.on('LOGOUT', () => {
       setLoginState(LOGIN_STATES.LOGGED_OUT)
       setIsLoggedIn(false)
@@ -28,21 +25,26 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
   useEffect(() => {
     if (loginState === LOGIN_STATES.INITIALIZE) {
 
-      let possibleLocalUser = localStorage.getItem('userState')
+      const possibleLocalUser = localStorage.getItem('userState')
       if (!possibleLocalUser) {
 
         setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
         return
       }
 
+      let parsedPossibleLocalUser: {userId: string, expiry: string} | null;
+
       try {
-        possibleLocalUser = JSON.parse(possibleLocalUser)
+        parsedPossibleLocalUser = JSON.parse(possibleLocalUser)
       } catch(err) {
         setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
         return
       }
 
-      if (new Date(possibleLocalUser?.expiry) < new Date()) {
+      if (
+        parsedPossibleLocalUser?.expiry && 
+        new Date(parsedPossibleLocalUser?.expiry) < new Date()
+      ) {
         setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
       } {
         setLoginState(LOGIN_STATES.CHECK_CAN_LOGIN)

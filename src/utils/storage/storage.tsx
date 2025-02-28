@@ -1,6 +1,7 @@
+type Key_Type = string;
 class Storage {
   #storage = new Map()
-  #splitKeys = []
+  #splitKeys: string[] = []
   constructor() {
    
   }
@@ -30,8 +31,7 @@ class Storage {
   }
 
   getData(name: string) {
-    if (this.#splitKeys.includes(name)) {
-
+    if (name && this.#splitKeys.includes(name)) {
       return Array.from(this.#storage.get(name), ([_, val]) => val)
     }
     return this.#storage.get(name)
@@ -41,16 +41,18 @@ class Storage {
     return this.#storage.has(name)
   }
 
-  splitData(name: string, data, key: string) {
+  
+  splitData(name: string, data: {[key: Key_Type]: unknown}[], key: Key_Type) {
     const errors = []
     if (!this.#splitKeys.includes(name)) this.#splitKeys.push(name);
 
-    if (!key) return false
+    if (!key || typeof key !== 'string') return false
   
     const dataMap = this.#storage.get(name)
     if (!dataMap) return false
 
     data.forEach((elem, index: number) => {
+
       if (!elem) {
         errors.push(`Missing Elem @ ${index}`);
         return
@@ -58,7 +60,8 @@ class Storage {
       if (!elem[key]) {
         errors.push(`Missing Key Value @ ${index}`)
       }
-      
+
+      //do something with the errors
       dataMap.set(`${elem[key]}`, elem)
     })
     return true

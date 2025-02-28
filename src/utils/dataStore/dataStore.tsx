@@ -35,13 +35,13 @@ class DataStore {
 
     const storageName = StorageDataNames.TASK
 
-    if (this.#storage.hasDataBy(storageName, taskId)) {
+    if (this.#storage.hasDataBy(storageName, `${taskId}`)) {
 
-      return {res: this.#storage.getDataBy(storageName, taskId), err: null}
+      return {res: this.#storage.getDataBy(storageName, `${taskId}`), err: null}
     }
 
     const {err, res} = await this.#fetcher.post<Task>({
-      path: ENDPOINTS.TASKS.GET_BY_ID(taskId),
+      path: ENDPOINTS.TASKS.GET_BY_ID(`${taskId}`),
       body: {
         userId
       } 
@@ -96,7 +96,7 @@ class DataStore {
 
     if (err || !res) {
       // do some error stuff here
-      return err
+      return {err, res: null}
     }
 
     this.#storage.setData<Tasks>(StorageDataNames.TASKS, res, 'id')
