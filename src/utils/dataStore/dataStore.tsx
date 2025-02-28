@@ -1,19 +1,16 @@
-import type { Tasks, Task } from "../../components/Tasks/Types"
 import type { GoogleLoginData, User } from "../../components/User/Types"
 import { ENDPOINTS } from "../../constants/endpoints"
 import { Fetcher } from "../fetcher/fetcher"
 import { toLoginRequestBody } from "../../context/UserLogin/utils"
 import { EventPayload } from "../fetcher/FetcherTypes"
 import { Storage } from "../storage/storage"
-
-const StorageDataNames = {
-  TASKS: 'TASKS',
-  TASK: 'TASKS'
-}
+import { Tasks as TasksApi } from "./tasks"
 
 class DataStore {
   #fetcher
   #storage = new Storage()
+
+  Tasks 
 
   constructor() {
     this.#fetcher = new Fetcher({ 
@@ -21,86 +18,15 @@ class DataStore {
       eventHandler: this.fetcherEventHandler,
       errorEventHandler: this.fetcherEventHandler
     })
+
+    this.Tasks = new TasksApi({
+      fetcher: this.#fetcher,
+      storage: this.#storage
+    })
   }
 
   fetcherEventHandler(event: EventPayload) {
     this.onChange({name: event.name,  data: event}, )
-  }
-
-  async getTask({
-    userId, taskId
-  }: {
-    userId: string, taskId: Task['id']
-  }) {
-
-    const storageName = StorageDataNames.TASK
-
-    if (this.#storage.hasDataBy(storageName, `${taskId}`)) {
-
-      return {res: this.#storage.getDataBy(storageName, `${taskId}`), err: null}
-    }
-
-    const {err, res} = await this.#fetcher.post<Task>({
-      path: ENDPOINTS.TASKS.GET_BY_ID(`${taskId}`),
-      body: {
-        userId
-      } 
-    })
-
-    this.#storage.setData(storageName, {err, res})
-  
-    return {err, res}
-  }
-
- async postNewTask({
-  title, desc, userId, dueDate
- }: {
-  title: string| null, desc: string | null, userId: string | null , dueDate:string | null
- }) {
-
-    if (!title || !desc || !userId) return {
-      err: 'missing fields',
-      res: null
-    }
-
-    const {err, res} = await this.#fetcher.post<Task>({
-      path: ENDPOINTS.TASKS.NEW, 
-      body: {
-        title, 
-        desc, 
-        userId,
-        dueDate,
-      }
-    })
-
-    return {err, res}
-  }
-
-  async getAllTasks({
-    userId
-  }: {
-    userId:string
-  }) {
-    
-    if (this.#storage.hasData(StorageDataNames.TASKS)) {
-
-      return {res: this.#storage.getData(StorageDataNames.TASKS), err: null}
-    }
-
-    const {err, res} = await this.#fetcher.post<Tasks>({
-      path: ENDPOINTS.TASKS.GET_ALL, 
-      body: {
-        userId
-      }
-    })
-
-    if (err || !res) {
-      // do some error stuff here
-      return {err, res: null}
-    }
-
-    this.#storage.setData<Tasks>(StorageDataNames.TASKS, res, 'id')
-    return {err, res}
   }
 
   async refreshLogin() {

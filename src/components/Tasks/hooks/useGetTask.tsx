@@ -11,7 +11,7 @@ const useGetTask = (id:Task["id"] | undefined) => {
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId && id) {
       (async () => {
-        const {err, res} = await DataStoreSingleton.getTask({
+        const {err, res} = await DataStoreSingleton.Tasks.getTask({
           taskId: id, userId: userLoginData.userId
         });
 

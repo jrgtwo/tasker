@@ -36,7 +36,7 @@ const usePostNewTaskForm = () => {
 
     if (!userLoginData) return setSubmissionError(new Error('no user id'))
 
-    const {err, res} = await DataStoreSingleton.postNewTask({
+    const {err, res} = await DataStoreSingleton.Tasks.postNewTask({
       title, desc, userId: userLoginData.userId, dueDate
     })
     if (err || !res) {

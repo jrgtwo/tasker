@@ -12,7 +12,7 @@ const useGetAllTasks = () => {
   useEffect(() => {
     if (isLoggedIn && userLoginData?.userId) {
       (async () => {
-        const {err, res} = await DataStoreSingleton.getAllTasks({userId: userLoginData.userId})
+        const {err, res} = await DataStoreSingleton.Tasks.getAllTasks({userId: userLoginData.userId})
         if (err || !res) {
           setError({err: ' error'})
         } else {
