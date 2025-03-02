@@ -57,7 +57,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
     if (loginState === LOGIN_STATES.CHECK_CAN_LOGIN) {
       // try to hit the refresh endpoint to login
       (async() => {
-        const {err, res} = await DataStoreSingleton.refreshLogin()
+        const {err, res} = await DataStoreSingleton.Auth.refreshLogin()
         if (err) {
           setLoginState(LOGIN_STATES.GOOGLE_OPEN_PROMPT)
           return
@@ -91,7 +91,7 @@ function UserLoginProvider({ children }: { children: ReactNode}) {
     if (loginState === LOGIN_STATES.GOOGLE_SIGNED_IN) {
 
       (async () => {
-        const { err, res } = await DataStoreSingleton.login({googleLoginData})
+        const { err, res } = await DataStoreSingleton.Auth.login({googleLoginData})
 
         if (err || !res) {
           setLoginState(LOGIN_STATES.LOGGED_OUT)

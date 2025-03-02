@@ -1,16 +1,17 @@
-import type { GoogleLoginData, User } from "../../components/User/Types"
 import { ENDPOINTS } from "../../constants/endpoints"
 import { Fetcher } from "../fetcher/fetcher"
-import { toLoginRequestBody } from "../../context/UserLogin/utils"
 import { EventPayload } from "../fetcher/FetcherTypes"
 import { Storage } from "../storage/storage"
 import { Tasks as TasksApi } from "./tasks"
+import { AuthApi } from "./auth"
 
 class DataStore {
   #fetcher
   #storage = new Storage()
+  #onHandlers: Map<string, unknown[]> = new Map()
 
   Tasks 
+  Auth
 
   constructor() {
     this.#fetcher = new Fetcher({ 
@@ -23,33 +24,15 @@ class DataStore {
       fetcher: this.#fetcher,
       storage: this.#storage
     })
+
+    this.Auth = new AuthApi({
+      fetcher: this.#fetcher
+    })
   }
 
   fetcherEventHandler(event: EventPayload) {
     this.onChange({name: event.name,  data: event}, )
   }
-
-  async refreshLogin() {
-    const {err, res} = await this.#fetcher.checkRefresh()
-
-    return {err, res: res?.loginData}
-  }
-
-  async login({ 
-    googleLoginData
-  }: {
-    googleLoginData: GoogleLoginData | null
-  }) {
-     const {err, res} = await this.#fetcher.post<User>({
-        path: ENDPOINTS.USER.LOGIN,
-        body: toLoginRequestBody({googleLoginData}),
-        withCredentials: true
-      })
-
-      return {err, res}
-  }
-
-  #onHandlers: Map<string, unknown[]> = new Map()
 
   on(name: string, cb: (data: unknown) => void){
     const currHandlersExist = this.#onHandlers.has(name)

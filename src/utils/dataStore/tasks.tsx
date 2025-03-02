@@ -1,4 +1,7 @@
+import type { Fetcher } from '../fetcher/fetcher';
+import type { Storage } from '../storage/storage';
 import type { Task } from './../../components/Tasks/Types'
+
 import { ENDPOINTS } from '../../constants/endpoints'
 
 const StorageDataNames = {
@@ -10,7 +13,7 @@ class Tasks {
   #fetcher
   #storage
 
-  constructor({ fetcher, storage}) {
+  constructor({ fetcher, storage}: { fetcher: Fetcher, storage: Storage}) {
     this.#fetcher = fetcher;
     this.#storage = storage;
   }
