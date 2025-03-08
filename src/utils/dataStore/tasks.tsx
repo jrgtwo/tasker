@@ -23,7 +23,12 @@ class Tasks {
   }: {
     userId:string
   }) {
-    if (this.#storage.hasData(StorageDataNames.TASKS)) {
+
+    //retrieve from cache if its not expired
+    if (
+      this.#storage.hasData(StorageDataNames.TASKS)
+      && !this.#storage.isCacheExpired(StorageDataNames.TASKS)
+    ) {
       return {res: this.#storage.getData(StorageDataNames.TASKS), err: null}
     } 
 
