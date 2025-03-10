@@ -29,11 +29,12 @@ class Storage {
         return false
       }
     } 
+
     this.setCache(name)
     return this.#storage.set(name, data);
   }
   hasDataBy(name: string, key: string) {
-  
+
     return this.#storage.get(name).has(key)
   }
 
@@ -55,10 +56,9 @@ class Storage {
 
   isCacheExpired(name: string) { 
     const possibleCache =  this.getCache(name);
-    debugger
     if (!possibleCache) return true
     const isExpired = possibleCache ? Date.now() > possibleCache : false
-    debugger
+
     return isExpired
 
   }

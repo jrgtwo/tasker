@@ -55,8 +55,11 @@ class Fetcher {
     if (!res.accessToken) return {err: true, message: 'Refresh Token Failure'}
 
     this.accessToken = res.accessToken
+    
+    // need some error handling here
+    const fetchData = await this.runFetch({path, options})
 
-    return this.runFetch({path, options})
+    return fetchData?.res
   }
 
   setAccessToken(accessToken:string) {

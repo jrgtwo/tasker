@@ -29,6 +29,7 @@ class Tasks {
       this.#storage.hasData(StorageDataNames.TASKS)
       && !this.#storage.isCacheExpired(StorageDataNames.TASKS)
     ) {
+
       return {res: this.#storage.getData(StorageDataNames.TASKS), err: null}
     } 
 
@@ -61,7 +62,7 @@ class Tasks {
   }) {
     
     const taskStorage = StorageDataNames.TASK
-  
+
     if (this.#storage.hasDataBy(taskStorage, `${taskId}`)) {
   
       return {res: this.#storage.getDataBy(taskStorage, `${taskId}`), err: null}
@@ -73,7 +74,7 @@ class Tasks {
         userId
       } 
     })
-  
+
     this.#storage.setData(taskStorage, {err, res})
   
     return {err, res}
